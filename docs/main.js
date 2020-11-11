@@ -1,13 +1,19 @@
-//13 physics
 var config = {
-  type: Phaser.AUTO,
-  width: 640,
-  height: 360,
+  type: Phaser.WEBGL,
+  //pixelArt: true,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    parent:'phaser-game',
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width:1920,
+    height:1140
+  },
+  
+
   scene: [
     BootScene,
     TitleScene,
     GameScene,
-    WinScene,
     UiScene,
     GameOverScene
   ],
@@ -21,5 +27,7 @@ var config = {
     },
   },
 };
+
+
 
 var game = new Phaser.Game(config);

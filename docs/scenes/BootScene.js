@@ -7,41 +7,66 @@ class BootScene extends Phaser.Scene {
     console.log("preloading");
     // load images
     this.loadImages();
-    //13 load Bitmap text
-    this.loadBitmapText();
     // load spritesheets
     this.loadSpriteSheets();
     // load audio
     this.loadAudio();
+    this.loadFont();
+    //this.load.bitmapFont('myfont', 'assets/hanging_tree_0.png', 'assets/hanging_tree.fnt');
+    
+
   }
 
+loadFont(){
+  this.load.bitmapFont('font', '../assets/font/font.png', '../assets/font/font.fnt');
+}
+
+
   loadImages() {
+    this.load.image('myfont', '../assets/hanging_tree_0.png');
     // load images
-    this.load.image("background", "assets/background.png");
-    this.load.image("player", "assets/player.png");
-    this.load.image("enemy", "assets/dragon.png");
-    this.load.image("treasure", "assets/treasure.png");
-    this.load.image("button1", "assets/blue_button01.png");
-    this.load.image("button2", "assets/blue_button02.png");
-  }
-  
-  //13: loadBitmapText
-  loadBitmapText() {
-    this.load.bitmapFont('bmFont', 'assets/bitmapfonts/font.png', 'assets/bitmapfonts/font.fnt');
+    this.load.image('title-door', '../assets/title_door.png');
+    this.load.image("background", ["../assets/background_ext_lit.png", "../assets/background_ext_n.png"]);
+    this.load.image("exit", ["../assets/exit.png", "../assets/exit_n.png"]);
+    this.load.image("window", ["../assets/window_lit.png", "../assets/window_new_n.png"]);
+    //this.load.image("player", "../assets/player.png");
+    this.load.image('mask', '../assets/mask-sprite.png');
+    //this.load.image('enemy','../assets/creature.png');
+    this.load.image('furniture',["../assets/furniture.png", "../assets/furniture_n.png"]);
+    //this.load.image("enemy", "../assets/dragon.png");
+    this.load.image("treasure", "../assets/treasure.png");
+    this.load.image("button1", "../assets/blue_button01.png");
+    this.load.image("button2", "../assets/blue_button02.png");
+    //this.load.setPath('../assets/');
+    this.load.multiatlas('creature', '../assets/creature_002.json');
+    this.load.multiatlas('creatureLeft', '../assets/creature_left.json')
+    //this.load.image("enemyOverlay", ["../assets/creature_lit.png", "../assets/creature_n.png"]);
+    //this.load.image("door", "../assets/door.png");
   }
 
   loadSpriteSheets() {
-    this.load.spritesheet("dude", "assets/dude.png", {
-      frameWidth: 32,
-      frameHeight: 48,
+    this.load.spritesheet("door", "../assets/door.png", {
+      frameWidth: 26,
+      frameHeight: 41,
     });
+    this.load.spritesheet("man", "../assets/cleric-horizontal.png", {
+      frameWidth: 114,
+      frameHeight: 120,
+    });
+    this.load.spritesheet("smoke", "../assets/smoke.png", {
+      frameWidth: 38,
+      frameHeight: 35,
+    });
+    
+
   }
+
+
 
   loadAudio() {
     // Adding Sounds
     this.load.audio("bgmusic", [
-      "assets/bgmusic.mp3",
-      "assets/bgmusic.ogg",
+      "../assets/soundtrack.mp3",
     ]);
   }
 

@@ -23,13 +23,8 @@ class UiButton extends Phaser.GameObjects.Container {
     // scale the button
     this.button.setScale(1.4);
 
-    // 13 create the button bitmaptext
-    this.buttonText = this.scene.add.bitmapText(0,0, 'bmFont', this.text);
-    this.buttonText.setScale(0.5);
-    this.buttonText.setTint(0xff00ff,0xff00ff, 0xff00ff, 0xff00ff);
-    this.buttonText.setOrigin(0,-0.3);
-
-    //this.buttonText = this.scene.add.text(0, 0, this.text , { fontSize: '26px', fill: '#fff' });
+    // create the button text
+    this.buttonText = this.scene.add.text(0, 0, this.text, { fontSize: '50px', fill: '#fff' });
     // center the button text inside the Ui button
     Phaser.Display.Align.In.Center(this.buttonText, this.button);
 
