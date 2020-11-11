@@ -1,0 +1,8 @@
+body {
+  background: rgb(8, 8, 8);
+}
+
+@font-face {
+  font-family: "Hanging Tree";
+  src: url(../assets/hanging_tree.fnt);
+}

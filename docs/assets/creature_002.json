@@ -1,0 +1,63 @@
+{
+	"textures": [
+		{
+			"image": "../assets/creature_lit.png",
+			"normalMap": "../assets/creature_n.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 234,
+				"h": 40
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "creature/walk/001.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 117,
+						"h": 40
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 117,
+						"h": 40
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 50,
+						"h": 40
+					}
+				},
+				{
+					"filename": "creature/walk/002.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 117,
+						"h": 40
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 117,
+						"h": 40
+					},
+					"frame": {
+						"x": 50,
+						"y": 0,
+						"w": 70,
+						"h": 40
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:716f2295d0c23c3608b90cc1f87929f2:315e4a4ab2b997cf0806308ffdc130fe:2e04fd6f2bb3ebf6fdc3c77abc5d02e8$"
+	}
+}
