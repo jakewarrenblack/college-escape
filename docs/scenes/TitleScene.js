@@ -10,7 +10,7 @@ class TitleScene extends Phaser.Scene {
 
   create() {
     // create title text
-    this.titleImage = this.physics.add.sprite(this.scaleW/2,this.scaleH/1.65, 'title-door', '../assets/title_door.png');
+    this.titleImage = this.physics.add.sprite(this.scaleW/2,this.scaleH/1.65, 'title-door', './assets/title_door.png');
     this.titleText = this.add.bitmapText(this.scaleW / 2, this.scaleH / 16,'font','COLLEGE ESCAPE',150);
     this.titleText.setOrigin(0.5);
 
