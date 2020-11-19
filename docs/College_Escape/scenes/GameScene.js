@@ -31,8 +31,9 @@ class GameScene extends Phaser.Scene {
     this.createDoor();
     this.createPlayer();
     this.createText();
-    this.createEnemy();
     this.createBullets();
+    this.createEnemy();
+    
     // this.createPrinters();
     //this.text = this.add.bitmapText(0, 0, 'myfont', 16.34);
     // this.createHealthBar();
@@ -116,6 +117,7 @@ class GameScene extends Phaser.Scene {
     /*this.scoreText = this.add.text(16, 16, "score: 0", {
       fontSize: "32px",
       fill: "#f00",
+      
     });*/
     //13 bitmapFont
     this.scoreText = this.add.bitmapText(16, 16, 'font', 'score: 0');
@@ -163,24 +165,28 @@ class GameScene extends Phaser.Scene {
  this.enemy.enableBody = true;
  this.enemy.collideWorldBounds = true;
 
+ this.handlePlayerEnemyCollider = this.physics.add.collider(this.enemy, this.player);
 
  this.physics.add.overlap(
+  this.bullets,
   this.enemy,
-  this.player,
-  this.collPlayerEnemy,
+  this.collBulletEnemy,
   null,
   this);
+
 
  this.enemy.setPipeline('Light2D');
 
   }
 
-
-  collPlayerEnemy(enemy, player) {
-    console.log("player hit enemy");
-    // player.disableBody(true, true);
-    this.gameOver();
-    
+  collBulletEnemy(bullet, enemy) {
+    this.player.score += 2;
+    this.bullet.setActive(false);
+    this.bullet.setVisible(false);
+    this.bullet.destroy();
+    this.enemy.destroy();
+    // this.enemyHealth = this.enemyHealth -1;
+    // console.log("enemy health" + this.enemyHealth);
   }
 
 
@@ -316,20 +322,13 @@ class GameScene extends Phaser.Scene {
     //16 bullets array is a group inside arcade physics engine
     this.bullets = this.physics.add.group({
         classType: Bullet,
-        maxSize: 10,
+        maxSize: 2,
         runChildUpdate: true
     });
 
     this.bullet; //stores the current bullet being shot
     this.lastFired = 0;
 
-    //16: add a collider between bullet and enemies
-    this.physics.add.overlap(
-    this.bullets,
-    this.enemy,
-    this.collBulletEnemy,
-    null,
-    this);
   }
 
   // createSmoke() {
@@ -478,17 +477,28 @@ class GameScene extends Phaser.Scene {
       this.player.anims.play("attack", true);
 
       if (this.bullet)
-      {
+      { 
+          this.bullet.setDir("r");
           this.bullet.fire(this.player.x, this.player.y);
-          this.lastFired = time + 50;
+          this.bullet.body.setSize(this.bullet.width * 1, this.bullet.height * 1);
+          this.lastFired = time + 500;
       }
 
 
       
-    }else if(this.keyCtrl.isDown){
-      this.player.setVelocityX(0);
-      this.player.anims.play("crouch", true);
-    }
+     }else if (this.keySpace.isDown && time > this.lastFired) {
+        console.log("fire")
+        this.bullet = this.bullets.get();
+          
+        if (this.bullet)
+        {
+            this.bullet.setDir("r");
+            this.bullet.fire(this.player.x, this.player.y);
+            this.bullet.body.setSize(this.bullet.width * 1, this.bullet.height * 1);
+            this.lastFired = time + 500;
+        }
+        
+      }
     
 
     else {
@@ -504,7 +514,6 @@ class GameScene extends Phaser.Scene {
 
 
 
-    
     this.infoTxt.setText([
       'Used: ' + this.bullets.getTotalUsed(),
       'Free: ' + this.bullets.getTotalFree()
