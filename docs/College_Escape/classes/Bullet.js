@@ -4,7 +4,7 @@ class Bullet extends Phaser.GameObjects.Image {
         super(scene);
         this.scene = scene;
         Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-        this.speed = Phaser.Math.GetSpeed(500, 1);
+        this.speed = Phaser.Math.GetSpeed(1500, 1);
         this.setScale(.4);
         this.direction = "r";
     }
@@ -31,7 +31,7 @@ class Bullet extends Phaser.GameObjects.Image {
             this.x -= this.speed * delta;   
         }
 
-        if (this.x > this.scaleW || this.x < this.scaleW)
+        if (this.x > this.x + 1920 || this.x < this.x-1920)
         {
             this.setActive(false);
             this.setVisible(false);

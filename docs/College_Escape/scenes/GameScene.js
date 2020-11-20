@@ -12,15 +12,20 @@ class GameScene extends Phaser.Scene {
     this.score = 0;
     this.mapWidth = 15360;
     this.rng = 0;
-    
+    this.ammo;
+    this.ammoPrint;
     this.randomX = Phaser.Math.Between(0,this.scaleW);
    // this.scale.toggleFullscreen();
     this.scaleW = this.sys.game.config.width;
     this.scaleH = this.sys.game.config.height;
 
+    
+
   }
 
   create() { 
+    this.ammo = 9;
+    this.ammoPrint = 10;
     this.createAudio();
     this.createInput();
     this.createBackground();
@@ -29,17 +34,20 @@ class GameScene extends Phaser.Scene {
     this.createCamera();
     this.createWindows();
     this.createDoor();
+    this.createAmmo();
     this.createPlayer();
     this.createText();
+    
     this.createBullets();
     this.createEnemy();
+
     
     // this.createPrinters();
     //this.text = this.add.bitmapText(0, 0, 'myfont', 16.34);
     // this.createHealthBar();
     //this.scoreLabel = this.add.bitmapText(50, 50, 'font', '0', 128); 
 
-    //this.font = this.add.bitmapText(20,80,"font","This is a test line",15);
+    
   }
 
 
@@ -112,23 +120,24 @@ class GameScene extends Phaser.Scene {
   }
 
   createText() {
-    
 
+    this.infoTxt = this.add.text(50,50, 16, 'text', { fontSize: '100px', fill: '#fff' });
+    this.infoTxt.setScrollFactor(0)
     /*this.scoreText = this.add.text(16, 16, "score: 0", {
       fontSize: "32px",
       fill: "#f00",
       
     });*/
     //13 bitmapFont
-    this.scoreText = this.add.bitmapText(16, 16, 'font', 'score: 0');
-    this.scoreText.setScale(0.25);
-    this.scoreText.setTint(0xff0000, 0xffffff, 0xff0000,0xffffff);
-    this.scoreText.setDepth();
-
-    this.infoTxt = this.add.bitmapText(16, 60, 'font', 'stuff');
-    this.infoTxt.setScale(0.25);
+    // this.scoreText = this.add.bitmapText(16, 16, 'font', 'score: 0');
+    // this.scoreText.setScale(0.25);
+    // this.scoreText.setTint(0xff0000, 0xffffff, 0xff0000,0xffffff);
+    // this.scoreText.setDepth();
+    this.infoTxt.setScale(10);
     this.infoTxt.setTint(0xff00ff, 0xffffff, 0xff00ff,0xffffff);
     this.infoTxt.setDepth();
+
+    // this.font = this.add.bitmapText(20,80,"font","Ammo: " + this.ammo,15);
   }
 
 
@@ -136,11 +145,12 @@ class GameScene extends Phaser.Scene {
 
   createEnemy(){
     //this.enemy = this.add.sprite(0, 255, 'creature', 'creature/walk/001.png');
-
+    this.enemyAlive = true;
     this.enemy = this.physics.add.sprite(this.scaleW/1.1,this.scaleH/1.7, 'creature', 'creature/walk/001.png');
     this.enemy.setScale(5);
     this.player.setScrollFactor(1,0)
     
+    //Enemy is a json 'multiatlas' spritesheet with normal map
     this.frameNames = this.anims.generateFrameNames('creature', {
         start: 1,
         end: 2,
@@ -158,11 +168,12 @@ class GameScene extends Phaser.Scene {
         repeat: -1
     };
 
-    this.anims.create(this.config);
+  this.anims.create(this.config);
  this.enemy.play('walk')
 
 
  this.enemy.enableBody = true;
+ //Collide with the walls
  this.enemy.collideWorldBounds = true;
 
  this.handlePlayerEnemyCollider = this.physics.add.collider(this.enemy, this.player);
@@ -174,20 +185,27 @@ class GameScene extends Phaser.Scene {
   null,
   this);
 
-
+//Add enemy to the light2d 'pipeline'
  this.enemy.setPipeline('Light2D');
 
   }
 
-  collBulletEnemy(bullet, enemy) {
-    this.player.score += 2;
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
-    this.bullet.destroy();
-    this.enemy.destroy();
-    // this.enemyHealth = this.enemyHealth -1;
-    // console.log("enemy health" + this.enemyHealth);
+  createAmmo(){
+    this.cigs = this.physics.add.group({
+      key: "cig",
+      repeat: 20,
+      score: 5,
+      setXY: {
+        x: this.scaleW/2,
+        y: this.scaleH/1.52,
+        stepX: this.scaleW/3,
+        stepY: 0,
+      },
+      pipeline: 'Light2D',
+    });
+    // this.cigarettes.setScale(5)
   }
+
 
 
 
@@ -212,12 +230,6 @@ class GameScene extends Phaser.Scene {
     this.bg.setOrigin(0, 0);
 
     this.bg.setScale(1);
-   // this.bg.setScrollFactor(0);
-    //this.furniture = this.add.tileSprite(0,0, game.config.width, game.config.height, "furniture");
-    //this.furniture.setOrigin(0,0);
-    //this.furniture.setScale(1);
-    //this.furniture.setScrollFactor(0);
-    //this.furniture.setPipeline('Light2D');
     this.bg.setPipeline('Light2D');
     var light = this.lights.addLight(20,20, 200).setScrollFactor(0.0).setIntensity(3);
     this.lights.enable().setAmbientColor(0x555555);
@@ -319,10 +331,11 @@ class GameScene extends Phaser.Scene {
 
 
   createBullets() {
+    
     //16 bullets array is a group inside arcade physics engine
     this.bullets = this.physics.add.group({
         classType: Bullet,
-        maxSize: 2,
+        maxSize: this.ammo,
         runChildUpdate: true
     });
 
@@ -334,8 +347,18 @@ class GameScene extends Phaser.Scene {
 
   collBulletEnemy(bullet, enemy) {
     console.log("bullet hit enemy");
-    this.enemy.disableBody(true,true)
+    // this.bullet.setActive(false);
+    // this.bullet.setVisible(false);
+    
+    this.enemy.destroy();
+    this.enemyAlive = false;
+    this.bullet.setActive(false);
+    this.bullet.setVisible(false);
+    this.bullet.destroy();
+    
   }
+
+
 
 
   getRand(){
@@ -396,6 +419,7 @@ class GameScene extends Phaser.Scene {
 
     //this.enemy.setVelocityX(80);
     var doors = this.doors.getChildren();
+    var cigs = this.cigs.getChildren();
 
     if (this.cursors.left.isDown) {
       this.bg.tilePositionX = this.myCam.scrollX -=5;
@@ -419,36 +443,40 @@ class GameScene extends Phaser.Scene {
         this.player.anims.play("crouch",true);
       }
 
+
+    //If space is pressed and time passed in update > time since last fired
     else if (this.keySpace.isDown && time > this.lastFired) {
-      console.log("fire")
-
-      this.bullet = this.bullets.get();
-      this.player.anims.play("attack", true);
-
-      if (this.bullet)
-      { 
-          this.bullet.setDir("r");
-          this.bullet.fire(this.player.x, this.player.y);
-          this.bullet.body.setSize(this.bullet.width * 1, this.bullet.height * 1);
-          this.lastFired = time + 500;
+      if(this.ammo >= 0){
+      this.ammo--;
+      this.ammoPrint--;
       }
-
-
-      
-     }else if (this.keySpace.isDown && time > this.lastFired) {
+      console.log('ammo left: ' + this.ammo)
         console.log("fire")
         this.bullet = this.bullets.get();
-          
+        
+        /*If bullet exists*/
         if (this.bullet)
         {
+          console.log('numbullets: ' + this.bullet)
+          // this.player.setVelocityX(0)
+          // this.player.anims.play("attack",true);
+          /*Bullet moving right, seems uneccessary but will add player facing left eventually*/
             this.bullet.setDir("r");
             this.bullet.fire(this.player.x, this.player.y);
             this.bullet.body.setSize(this.bullet.width * 1, this.bullet.height * 1);
-            this.lastFired = time + 500;
+            /*Prevent bullet spamming, can only fire once every second*/
+            this.lastFired = time + 1000;
+
         }
         
-      }else if(this.keyCtrl.isDown){
+      }
+      else if(this.keyCtrl.isDown){
         this.player.anims.play("crouch",true);
+      
+        /*Let the attack animation run until the bullet is 1/4 the screen's width away from the player*/
+      }else if(this.bullet && this.bullet.x < this.player.x + this.scaleW/4){
+        this.player.setVelocityX(0)
+        this.player.anims.play("attack",true);
       }
     
 
@@ -464,11 +492,61 @@ class GameScene extends Phaser.Scene {
 
 
 
+    // console.log('numdoors: ' + numDoors)
+  
+    // for (let i = 0; i < numCigarettes; i++) {
 
-    this.infoTxt.setText([
-      'Used: ' + this.bullets.getTotalUsed(),
-      'Free: ' + this.bullets.getTotalFree()
-   ]);
+    //   if (
+    //     Phaser.Geom.Intersects.RectangleToRectangle(
+    //       this.player.getBounds(),
+    //       numCigarettes[i].getBounds()
+    //     )
+    //   ) {
+    //     this.bullets.children.each(function(b) {
+    //       if (b.active) {
+    //               b.setActive(false); 
+    //       }
+    //   }.bind(this));
+    //     break;
+    //   }
+    // }
+    
+    var numCigs = cigs.length;
+    console.log(cigs.length)
+    // console.log('numdoors: ' + numDoors)
+  
+    for (let i = 0; i < numCigs; i++) {
+
+      if (
+        Phaser.Geom.Intersects.RectangleToRectangle(
+          this.player.getBounds(),
+          cigs[i].getBounds()
+        )
+      ){
+        /*Return ammo when you pick up cigs*/
+        this.bullets.children.each(function(b) {
+                if (b.active) {
+                        b.setActive(false); 
+                        cigs[i].setActive(false)
+                        cigs[i].setVisible(false);
+                        this.ammo = 9;
+                        this.ammoPrint = 10;
+                }
+            }.bind(this));
+      }
+    
+  }
+
+ 
+  this.infoTxt.setText('Ammo: ' + this.ammoPrint)
+
+
+
+  //   this.infoTxt.setText([
+  //     // 'Used: ' + this.bullets.getTotalUsed(),
+  //     // 'Free: ' + this.bullets.getTotalFree()
+  //     'Ammo: ' + this.ammo
+  //  ]);
 
 
 
@@ -535,11 +613,13 @@ class GameScene extends Phaser.Scene {
     //   this.player.x += this.playerSpeed;
     // }
 
-    
-    this.followPlayer();
-
+    if(this.enemyAlive){
+      this.followPlayer();
+    }
   }
 
+
+  
 
 
 
