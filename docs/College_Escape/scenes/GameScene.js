@@ -331,32 +331,6 @@ class GameScene extends Phaser.Scene {
 
   }
 
-  // createSmoke() {
-  //   //13: add  player sprite to physics engine
-  //   this.smoke = this.physics.add.sprite(this.smokePosX, this.smokePosY, "smoke");
-  //   this.smoke.setScale(2.5);
-
-  //   this.anims.create({
-  //     key: "puff",
-  //     frames: this.anims.generateFrameNumbers("smoke", { start: 0, end: 4}),
-  //     frameRate: 10,
-  //     repeat: 1,
-  //   });
-
-  //   this.physics.add.overlap(
-  //     this.smoke,
-  //     this.enemy,
-  //     this.collSmokeEnemy,
-  //     null,
-  //     this);
-
-  // }
-
-  // collSmokeEnemy(smoke, enemy) {
-  //   console.log("smoke hit enemy");
-  //   enemy.disableBody(true,true)
-    
-  // }
 
   collBulletEnemy(bullet, enemy) {
     console.log("bullet hit enemy");
@@ -413,25 +387,6 @@ class GameScene extends Phaser.Scene {
   // console.log(this.rng)
 }
   
-
-
-// createHealthBar(){
-
-
-//   this.rectWidth =0;
-
-//   this.r2 = this.add.rectangle(50, 50, this.scaleW/3, this.scaleH/20, 0x48f542);
-//   this.r1 = this.add.rectangle(50, 50, this.rectangleWidth, this.scaleH/20, 0xf51818);
-
-//   this.r2.setScrollFactor(0);
-//   this.r1.setScrollFactor(0);
-// }
-
-
-// getRng(){
-//   this.rng = Phaser.Math.Between(0, 1);
-//   return this.rng;
-// }
   update(time, delta) {
     this.keyCtrl = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -458,19 +413,13 @@ class GameScene extends Phaser.Scene {
       
       this.player.anims.play("hide", true);
 
-    // }else if(this.cursors.down.isDown){
-    //   this.player.setVelocityX(0);
-    //   this.smokePosX = this.player.x + 150
-    //   this.smokePosY = this.player.y - 40;
-    //   this.player.anims.play("attack", true);
-    //   this.createSmoke();
+    }
 
-    //   this.smoke.setVelocityX(500);
-    //   this.smoke.setAlpha(0.2)
-    //     this.smoke.anims.play("puff",true);
-    
-    // }
-    }else if (this.keySpace.isDown && time > this.lastFired) {
+      else if(this.keyCtrl.isDown){
+        this.player.anims.play("crouch",true);
+      }
+
+    else if (this.keySpace.isDown && time > this.lastFired) {
       console.log("fire")
 
       this.bullet = this.bullets.get();
@@ -498,6 +447,8 @@ class GameScene extends Phaser.Scene {
             this.lastFired = time + 500;
         }
         
+      }else if(this.keyCtrl.isDown){
+        this.player.anims.play("crouch",true);
       }
     
 
