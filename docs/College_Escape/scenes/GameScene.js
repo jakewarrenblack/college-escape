@@ -25,6 +25,7 @@ class GameScene extends Phaser.Scene {
 
   create() { 
     this.ammo = 9;
+    this.hitCount = 0;
     this.ammoPrint = 10;
     this.createAudio();
     this.createInput();
@@ -149,7 +150,6 @@ class GameScene extends Phaser.Scene {
     this.enemy = this.physics.add.sprite(this.scaleW/1.1,this.scaleH/1.7, 'creature', 'creature/walk/001.png');
     this.enemy.setScale(5);
     this.player.setScrollFactor(1,0)
-    this.enemy.body.bounce.setTo(1, 1);
     
     //Enemy is a json 'multiatlas' spritesheet with normal map
     this.frameNames = this.anims.generateFrameNames('creature', {
@@ -342,28 +342,42 @@ class GameScene extends Phaser.Scene {
 
     this.bullet; //stores the current bullet being shot
     this.lastFired = 0;
-    this.bullets.enableBody = true;
-
 
   }
 
 
   collBulletEnemy(bullet, enemy) {
-    console.log("bullet hit enemy");
+    this.hitCount++;
+    console.log('hitcount is ' + this.hitCount)
     // this.bullet.setActive(false);
     // this.bullet.setVisible(false);
-    this.bullet.enableBody = true;
-    this.handleBulletEnemyCollider = this.physics.add.collider(this.bullet, this.enemy);
-
+    this.changeTint();
     // this.enemy.destroy();
     // this.enemyAlive = false;
-    // this.bullet.setActive(false);
-    // this.bullet.setVisible(false);
-    // this.bullet.destroy();
+    this.bullet.setActive(false);
+    this.bullet.setVisible(false);
+    
+    this.bullet.destroy();
     
   }
 
+changeTint(){
 
+  if(this.hitCount == 1){
+    this.enemy.tint =  0xa00900;
+  }
+  else if(this.hitCount == 2){
+    this.enemy.tint =  0x7f0700;
+
+  }else if(this.hitCount == 3){
+    this.enemy.tint =  0x5c0500;
+
+  }else if(this.hitCount >3){
+    this.enemy.destroy();
+    this.enemyAlive = false;
+  }
+
+}
 
 
   getRand(){
@@ -416,7 +430,6 @@ class GameScene extends Phaser.Scene {
 }
   
   update(time, delta) {
-
     this.keyCtrl = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     // let keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -463,12 +476,7 @@ class GameScene extends Phaser.Scene {
         /*If bullet exists*/
         if (this.bullet)
         {
-
-          // console.log('numbullets: ' + this.bullet)
-          this.physics.add(this.bullet)
-          this.bullet.body.immovable = true;
-          this.physics.collide(this.bullet, this.enemy);
-
+          console.log('numbullets: ' + this.bullet)
           // this.player.setVelocityX(0)
           // this.player.anims.play("attack",true);
           /*Bullet moving right, seems uneccessary but will add player facing left eventually*/
@@ -478,9 +486,7 @@ class GameScene extends Phaser.Scene {
             /*Prevent bullet spamming, can only fire once every second*/
             this.lastFired = time + 1000;
 
-        }
-        
-      }
+        }}
       else if(this.keyCtrl.isDown){
         this.player.anims.play("crouch",true);
       
@@ -498,9 +504,6 @@ class GameScene extends Phaser.Scene {
       this.player.anims.play("still",true);
       //console.log('running')
     }
-
-
-
 
 
     // console.log('numdoors: ' + numDoors)
