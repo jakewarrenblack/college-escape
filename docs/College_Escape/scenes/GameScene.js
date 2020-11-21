@@ -14,7 +14,6 @@ class GameScene extends Phaser.Scene {
     this.rng = 0;
     this.ammo;
     this.ammoPrint;
-    this.randomX = Phaser.Math.Between(0,this.scaleW);
    // this.scale.toggleFullscreen();
     this.scaleW = this.sys.game.config.width;
     this.scaleH = this.sys.game.config.height;
@@ -28,6 +27,7 @@ class GameScene extends Phaser.Scene {
     this.hitCount = 0;
     this.ammoPrint = 10;
     this.seesPlayer = false;
+    this.randomX;
     this.createAudio();
     this.createInput();
     this.createBackground();
@@ -39,9 +39,10 @@ class GameScene extends Phaser.Scene {
     this.createAmmo();
     this.createPlayer();
     this.createText();
-    
+    this.createPrinters();
     this.createBullets();
     this.createEnemy();
+    this.createEnemyTween();
 
     
     // this.createPrinters();
@@ -146,9 +147,13 @@ class GameScene extends Phaser.Scene {
 
 
   createEnemy(){
+    this.randomX = Phaser.Math.Between(0,this.bg.width);
+    // console.log('width of screen: ' + this.scaleW)
+    // console.log('width of entire map: ' + this.bg.width)
     //this.enemy = this.add.sprite(0, 255, 'creature', 'creature/walk/001.png');
     this.enemyAlive = true;
-    this.enemy = this.physics.add.sprite(this.scaleW/1.1,this.scaleH/1.7, 'creature', 'creature/walk/001.png');
+
+    this.enemy = this.physics.add.sprite(this.randomX,this.scaleH/1.7, 'creature', 'creature/walk/001.png').setBounce(1);
     this.enemy.setScale(5);
     this.player.setScrollFactor(1,0)
     
@@ -197,6 +202,28 @@ class GameScene extends Phaser.Scene {
 //Add enemy to the light2d 'pipeline'
  this.enemy.setPipeline('Light2D');
 
+
+
+  }
+
+  createEnemyTween(){
+    this.tween = this.tweens.add({
+      targets: this.enemy,
+      x: { from: this.randomX, to: this.randomX+500 },
+      // alpha: { start: 0, to: 1 },
+      // alpha: 1,
+      // alpha: '+=1',
+      ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 2000,
+      repeat: -1,            // -1: infinity
+      yoyo: true,
+      flipX:true
+    });
+    if(this.seesPlayer){
+      this.tween.pause();
+    }else{
+      this.tween.play();
+    }
   }
 
   createAmmo(){
@@ -251,9 +278,11 @@ class GameScene extends Phaser.Scene {
 
   createPrinters(){
     
-    this.printer = this.physics.add.sprite(this.randomX,this.scaleH/1.68, "printer");
+    this.printer = this.physics.add.sprite(1000,this.scaleH/1.68, "printer").setImmovable();
     this.printer.setScrollFactor(1,0)
     this.printer.setScale(3.5)
+     this.printer.enableBody = true;
+
   }
 
   createCamera() {
@@ -316,6 +345,12 @@ class GameScene extends Phaser.Scene {
     this.anims.create({
       key: "crouch",
       frames: this.anims.generateFrameNumbers("man", { start: 30, end: 30}),
+      frameRate: 2,
+      repeat: 1,
+    });
+    this.anims.create({
+      key: "melee",
+      frames: this.anims.generateFrameNumbers("man", { start: 31, end: 31}),
       frameRate: 2,
       repeat: 1,
     });
@@ -405,6 +440,7 @@ changeTint(){
 
   if(this.hitCount == 1){
     this.enemy.tint =  0xa00900;
+    // this.enemy.shake(500);
     
   }
   else if(this.hitCount == 2){
@@ -421,70 +457,36 @@ changeTint(){
 }
 
 
-  getRand(){
-    this.rng = Phaser.Math.Between(0,1);
-  }
 
   
   followPlayer(){
 
-    this.time.delayedCall(
-      5000,   
-      function (){
-        this.getRand();
-        // console.log('updating')
-      },
-      [],
-      this
-  );
-
-
-
-  
-    /*If the player is way left or right of the enemy*/
-    if(!this.seesPlayer){
-    if(this.player.x < this.enemy.x - this.scaleW/3 || this.player.x > this.enemy.x + this.scaleW/3){
-      if (this.rng == 0) 
-      {        
-        this.enemy.setVelocityX(50);             
-        this.enemy.flipX = false;    
-      } 
-      else if(this.rng == 1) {          
-        this.enemy.setVelocityX(-50);            
-         this.enemy.flipX = true;
-        }   
-
-    }else if (this.player.x < this.enemy.x ) {
-      /*If the player is to the enemy's left*/
-      this.enemy.setVelocityX(-100);
-
-      this.enemy.flipX = true;
-      // this.enemy.setOffset(15,10)
-    } else  if ((this.player.x > this.enemy.x )) {
-       /*If the player is to the enemy's right*/
-      this.enemy.setVelocityX(100);
-
-      this.enemy.flipX = false;
-      // this.enemy.setOffset(0,10)
-    }
-  }else{
-    if(this.player.x < this.enemy.x){
-      this.enemy.flipX = true;
+if(this.player.x > (this.enemy.x - this.scaleW/2) || this.player.x > (this.enemy.x + this.scaleW/2)){
+ /*If seesPlayer is true, tweening stops*/
+ /*seesPlayer can also be made true by shooting the enemy*/
+  this.seesPlayer = true;
+}
+      /*If to left*/
+  	 if (this.player.x < this.enemy.x && this.seesPlayer) {
+       this.enemy.flipX = true;
       this.enemy.setVelocityX(-500);
-    }else{
+      /*If to right*/
+    } else  if (this.player.x > this.enemy.x && this.seesPlayer) {
       this.enemy.setVelocityX(500);
-      this.flipX = false;
-    }
-  }
+      this.enemy.flipX = false;
 
-  // console.log(this.rng)
+    }
+  
 }
   
   update(time, delta) {
     this.keyCtrl = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    // let keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);    // let keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     // let keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+
+
+    this.physics.add.collider(this.enemy,this.printer, this.hitObject, null, this);
 
 
     //this.enemy.setVelocityX(80);
@@ -509,8 +511,12 @@ changeTint(){
 
     }
 
-      else if(this.keyCtrl.isDown){
+      else if(this.keyCtrl.isPressed){
         this.player.anims.play("crouch",true);
+      } 
+        else if(this.keyShift.isDown){
+          console.log('shift pressed')
+          this.player.anims.play("melee",true)
       }
 
 
@@ -546,7 +552,7 @@ changeTint(){
         this.player.anims.play("crouch",true);
       
         /*Let the attack animation run until the bullet is 1/4 the screen's width away from the player*/
-      }else if(this.bullet && this.bullet.x < (this.player.x + this.scaleW/4)){
+      }else if(this.bullet && this.bullet.x < (this.player.x + this.scaleW/4) && this.bullet.active){
         this.player.setVelocityX(0)
         this.player.anims.play("attack",true);
       }
@@ -555,7 +561,7 @@ changeTint(){
     else {
       
       this.player.setVelocityX(0);
-      
+      this.player.body.setSize(60)
       this.player.anims.play("still",true);
       //console.log('running')
     }
@@ -651,7 +657,11 @@ changeTint(){
 
 
   
+   hitObject () {
 
+    
+
+}
 
 
 

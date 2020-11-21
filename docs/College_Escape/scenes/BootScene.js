@@ -53,7 +53,7 @@ loadFont(){
       frameWidth: 26,
       frameHeight: 41,
     });
-    this.load.spritesheet("man", "../assets/cleric-horizontal-crouch.png", {
+    this.load.spritesheet("man", "../assets/cleric-horizontal-crouch-attack.png", {
       frameWidth: 114,
       frameHeight: 120,
     });
