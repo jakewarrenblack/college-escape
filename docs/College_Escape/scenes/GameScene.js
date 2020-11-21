@@ -27,6 +27,7 @@ class GameScene extends Phaser.Scene {
     this.ammo = 9;
     this.hitCount = 0;
     this.ammoPrint = 10;
+    this.seesPlayer = false;
     this.createAudio();
     this.createInput();
     this.createBackground();
@@ -177,7 +178,6 @@ class GameScene extends Phaser.Scene {
  //Collide with the walls
  this.enemy.collideWorldBounds = true;
 
- this.handlePlayerEnemyCollider = this.physics.add.collider(this.enemy, this.player);
 
  this.physics.add.overlap(
   this.bullets,
@@ -185,6 +185,14 @@ class GameScene extends Phaser.Scene {
   this.collBulletEnemy,
   null,
   this);
+
+  this.physics.add.overlap(
+    this.player,
+    this.enemy,
+    this.collPlayerEnemy,
+    null,
+    this);
+
 
 //Add enemy to the light2d 'pipeline'
  this.enemy.setPipeline('Light2D');
@@ -325,7 +333,7 @@ class GameScene extends Phaser.Scene {
       frameRate: 7,
       repeat: 1,
     });
-
+    
 
     this.camera.startFollow(this.player);
   }
@@ -348,10 +356,12 @@ class GameScene extends Phaser.Scene {
 
   collBulletEnemy(bullet, enemy) {
     this.hitCount++;
+
     console.log('hitcount is ' + this.hitCount)
     // this.bullet.setActive(false);
     // this.bullet.setVisible(false);
     this.changeTint();
+    this.seesPlayer = true;
     // this.enemy.destroy();
     // this.enemyAlive = false;
     this.bullet.setActive(false);
@@ -361,10 +371,41 @@ class GameScene extends Phaser.Scene {
     
   }
 
+collPlayerEnemy(){
+  if(this.player.x < this.enemy.x){
+  this.enemy.x+=50;
+  }else{
+    this.enemy.x-=50;
+  }
+  this.playerDamage+=25;
+
+  this.changePlayerTint();
+}
+
+changePlayerTint(){
+  if(this.playerDamage == 25){
+    
+    // this.cameras.main.shake(500);
+    // this.bg.setTint(0x5c0500);
+    // this.player.setTint(0x5c0500);
+    // this.doors.setTint(0x5c0500);
+  }else if(this.playerDamage == 50){
+
+  }else if(this.playerDamage == 75){
+
+  }
+  else if(this.playerDamage == 100){
+
+  }
+}
+
+
 changeTint(){
+
 
   if(this.hitCount == 1){
     this.enemy.tint =  0xa00900;
+    
   }
   else if(this.hitCount == 2){
     this.enemy.tint =  0x7f0700;
@@ -401,6 +442,7 @@ changeTint(){
 
   
     /*If the player is way left or right of the enemy*/
+    if(!this.seesPlayer){
     if(this.player.x < this.enemy.x - this.scaleW/3 || this.player.x > this.enemy.x + this.scaleW/3){
       if (this.rng == 0) 
       {        
@@ -425,6 +467,15 @@ changeTint(){
       this.enemy.flipX = false;
       // this.enemy.setOffset(0,10)
     }
+  }else{
+    if(this.player.x < this.enemy.x){
+      this.enemy.flipX = true;
+      this.enemy.setVelocityX(-500);
+    }else{
+      this.enemy.setVelocityX(500);
+      this.flipX = false;
+    }
+  }
 
   // console.log(this.rng)
 }
@@ -486,12 +537,16 @@ changeTint(){
             /*Prevent bullet spamming, can only fire once every second*/
             this.lastFired = time + 1000;
 
+            if(this.bullet.x > (this.player.x + this.scaleW)){
+              this.bullet.setActive(false);
+            }
+
         }}
       else if(this.keyCtrl.isDown){
         this.player.anims.play("crouch",true);
       
         /*Let the attack animation run until the bullet is 1/4 the screen's width away from the player*/
-      }else if(this.bullet && this.bullet.x < this.player.x + this.scaleW/4){
+      }else if(this.bullet && this.bullet.x < (this.player.x + this.scaleW/4)){
         this.player.setVelocityX(0)
         this.player.anims.play("attack",true);
       }
@@ -504,26 +559,6 @@ changeTint(){
       this.player.anims.play("still",true);
       //console.log('running')
     }
-
-
-    // console.log('numdoors: ' + numDoors)
-  
-    // for (let i = 0; i < numCigarettes; i++) {
-
-    //   if (
-    //     Phaser.Geom.Intersects.RectangleToRectangle(
-    //       this.player.getBounds(),
-    //       numCigarettes[i].getBounds()
-    //     )
-    //   ) {
-    //     this.bullets.children.each(function(b) {
-    //       if (b.active) {
-    //               b.setActive(false); 
-    //       }
-    //   }.bind(this));
-    //     break;
-    //   }
-    // }
     
     var numCigs = cigs.length;
     console.log(cigs.length)
@@ -531,55 +566,37 @@ changeTint(){
   
     for (let i = 0; i < numCigs; i++) {
 
+      if(!this.keySpace.isDown && cigs[i]){
       if (
         Phaser.Geom.Intersects.RectangleToRectangle(
           this.player.getBounds(),
           cigs[i].getBounds()
         )
       ){
+        if(!this.keySpace.isDown){
         /*Return ammo when you pick up cigs*/
         this.bullets.children.each(function(b) {
-                if (b.active) {
+
+                if (b.active && b.x > this.player.x + this.scaleW) {
                         b.setActive(false); 
                         cigs[i].setActive(false)
                         cigs[i].setVisible(false);
+                        cigs[i].destroy();
                         this.ammo = 9;
                         this.ammoPrint = 10;
                 }
             }.bind(this));
+          }
+
+      
       }
+
     
   }
+}
 
  
-  this.infoTxt.setText('Ammo: ' + this.ammoPrint)
-
-
-
-  //   this.infoTxt.setText([
-  //     // 'Used: ' + this.bullets.getTotalUsed(),
-  //     // 'Free: ' + this.bullets.getTotalFree()
-  //     'Ammo: ' + this.ammo
-  //  ]);
-
-
-
-
-
-//     this.r1.setSize(this.rectWidth, this.scaleW/20);
-// if(
-//   Phaser.Geom.Intersects.RectangleToRectangle(
-//     this.player.getBounds(),
-//     this.enemy.getBounds()
-//   )
-// ){
-//   this.rectWidth+=2;
-    
-// }else{
-//   this.rectWidth-=2;
-// }
-
-    
+  this.infoTxt.setText('Ammo: ' + this.ammoPrint) 
     
     var numDoors = doors.length;
     // console.log('numdoors: ' + numDoors)
@@ -647,6 +664,14 @@ changeTint(){
 
 
   gameOver() {
+    this.time.delayedCall(
+      500,
+      function () {
+        this.cameras.main.fade(2500);
+      },
+      [],
+      this
+    );
     this.scene.start("GameOver");
   }
 

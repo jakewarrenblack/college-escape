@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="20633593-01c4-49cf-9932-4dee595b99ad" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/docs/College_Escape/scenes/BootScene.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/College_Escape/scenes/BootScene.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/College_Escape/scenes/GameScene.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/College_Escape/scenes/GameScene.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,7 +34,7 @@
       <updated>1605820212624</updated>
       <workItem from="1605820217879" duration="123000" />
       <workItem from="1605885843868" duration="1390000" />
-      <workItem from="1605902927116" duration="80000" />
+      <workItem from="1605902927116" duration="677000" />
     </task>
     <servers />
   </component>
