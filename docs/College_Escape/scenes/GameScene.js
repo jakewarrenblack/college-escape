@@ -24,25 +24,36 @@ class GameScene extends Phaser.Scene {
 
   create() { 
     this.ammo = 9;
-    this.hitCount = 0;
     this.ammoPrint = 10;
-    this.seesPlayer = false;
-    this.randomX;
     this.createAudio();
     this.createInput();
     this.createBackground();
     
+
     this.createExit();
     this.createCamera();
     this.createWindows();
-    this.createDoor();
+    this.createDoor(); 
     this.createAmmo();
     this.createPlayer();
     this.createText();
     this.createPrinters();
     this.createBullets();
-    this.createEnemy();
-    this.createEnemyTween();
+    this.createEnemies();
+    
+    
+
+    /*Make 3 enemies separately rather than a group.
+    Couldn't apply Light2D pipeline to group, and I want this on the enemies.*/
+
+
+    // this.enemy.createEnemyTween();
+    // this.enemy2.createEnemyTween();
+    // this.createEnemy1();
+    // this.createEnemy2();
+    // this.createEnemy3();
+
+    // this.createEnemyTween();
 
     
     // this.createPrinters();
@@ -53,10 +64,69 @@ class GameScene extends Phaser.Scene {
     
   }
 
+  createEnemies(){
+    this.enemy = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk')
+    this.enemy.createEnemyTween(this,this.enemy.x);
+    
+    // this.enemy.createEnemyTween(this.enemy)
+    this.enemy2 = new Enemy(this,this.randomPos(),this.scaleH/1.7,'newCreature','walking')
+    this.enemy2.createEnemyTween(this,this.enemy2.x);
+    // this.enemy.collBulletEnemy(this,this.bullets,this.enemy2);
+
+    // this.physics.add.overlap(
+    //   this.bullets,
+    //   this.enemy,
+    //   this.collBulletEnemy(this.enemy),
+    //   null,
+    //   this);
+
+    //   this.physics.add.overlap(
+    //     this.bullets,
+    //     this.enemy2,
+    //     this.collBulletEnemy(this.enemy2),
+    //     null,
+    //     this);
 
 
+  }
 
 
+  createBullets() {
+    
+    //16 bullets array is a group inside arcade physics engine
+    this.bullets = this.physics.add.group({
+        classType: Bullet,
+        maxSize: this.ammo,
+        runChildUpdate: true
+    });
+
+    this.bullet; //stores the current bullet being shot
+    this.lastFired = 0;
+    // this.enemy.collBulletEnemy(this,this.bullets,this.enemy);
+
+  }
+  
+  collBulletEnemy(enemy) {
+    this.enemy.hitCount++;
+
+    console.log('hitcount is ' + this.enemy.hitCount)
+    // this.bullet.setActive(false);
+    // this.bullet.setVisible(false);
+    this.enemy.changeTint();
+    this.enemy.seesPlayer = true;
+    // this.enemy.destroy();
+    // this.enemyAlive = false;
+    this.bullet.setActive(false);
+    this.bullet.setVisible(false);
+    
+    this.bullet.destroy();
+    
+  }
+
+  
+  randomPos(){
+    return Phaser.Math.Between(500,this.bg.width-200);
+}   
 
   createExit(){
     this.exit = this.physics.add.sprite(14850, this.scaleH/1.89, "exit");
@@ -146,85 +216,212 @@ class GameScene extends Phaser.Scene {
 
 
 
-  createEnemy(){
-    this.randomX = Phaser.Math.Between(0,this.bg.width);
-    // console.log('width of screen: ' + this.scaleW)
-    // console.log('width of entire map: ' + this.bg.width)
-    //this.enemy = this.add.sprite(0, 255, 'creature', 'creature/walk/001.png');
-    this.enemyAlive = true;
+  createEnemy1(){
+    // this.randomX = Phaser.Math.Between(0,this.bg.width);
+    // this.enemyAlive = true;
 
-    this.enemy = this.physics.add.sprite(this.randomX,this.scaleH/1.7, 'creature', 'creature/walk/001.png').setBounce(1);
-    this.enemy.setScale(5);
-    this.player.setScrollFactor(1,0)
+    // this.enemy = this.physics.add.sprite(500,this.scaleH/1.7, 'creature').setBounce(1);
+
+
+
+
+
+    // this.anims.create({
+    //   key: 'walk',
+    //   frames: this.anims.generateFrameNumbers('creature', {
+    //     start: 0,
+    //     end:1,
+    //   }),
+    //   frameRate: 4,
+    //   repeat: -1,
+      
+    // });
+
+    // this.enemy.anims.play('walk',true)
+    // // this.enemy = this.physics.add.sprite(this.randomX,this.scaleH/1.7, 'creature', 'creature/walk/001.png').setBounce(1);
+    // this.enemy.setScale(5);
+    // this.player.setScrollFactor(1,0)
     
     //Enemy is a json 'multiatlas' spritesheet with normal map
-    this.frameNames = this.anims.generateFrameNames('creature', {
-        start: 1,
-        end: 2,
-        zeroPad: 3,
-        prefix: 'creature/walk/',
-        suffix: '.png',
-    });
+    // this.frameNames = this.anims.generateFrameNames('creature', {
+    //     start: 1,
+    //     end: 2,
+    //     zeroPad: 3,
+    //     prefix: 'creature/walk/',
+    //     suffix: '.png',
+    // });
 
-    //console.log(frameNames);
+    // //console.log(frameNames);
 
-    this.config = {
-        key: 'walk',
-        frames: this.frameNames,
-        frameRate: 2,
-        repeat: -1
-    };
+    // this.config = {
+    //     key: 'walk',
+    //     frames: this.frameNames,
+    //     frameRate: 2,
+    //     repeat: -1
+    // };
 
-  this.anims.create(this.config);
- this.enemy.play('walk')
-
-
- this.enemy.enableBody = true;
- //Collide with the walls
- this.enemy.collideWorldBounds = true;
+    // this.anims.create(this.config);
+    // this.enemy.play('walk')
 
 
- this.physics.add.overlap(
-  this.bullets,
-  this.enemy,
-  this.collBulletEnemy,
-  null,
-  this);
+    // this.enemy.enableBody = true;
+    // //Collide with the walls
+    // this.enemy.collideWorldBounds = true;
 
-  this.physics.add.overlap(
-    this.player,
-    this.enemy,
-    this.collPlayerEnemy,
-    null,
-    this);
+
+    // this.physics.add.overlap(
+    //   this.bullets,
+    //   this.enemy,
+    //   this.collBulletEnemy,
+    //   null,
+    //   this);
+
+    //   this.physics.add.overlap(
+    //     this.player,
+    //     this.enemy,
+    //     this.collPlayerEnemy,
+    //     null,
+    //     this);
 
 
 //Add enemy to the light2d 'pipeline'
- this.enemy.setPipeline('Light2D');
-
-
-
+//  this.enemy.setPipeline('Light2D');
   }
 
-  createEnemyTween(){
-    this.tween = this.tweens.add({
-      targets: this.enemy,
-      x: { from: this.randomX, to: this.randomX+500 },
-      // alpha: { start: 0, to: 1 },
-      // alpha: 1,
-      // alpha: '+=1',
-      ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
-      duration: 2000,
-      repeat: -1,            // -1: infinity
-      yoyo: true,
-      flipX:true
+  createEnemy2(){
+    this.randomX = Phaser.Math.Between(0,this.bg.width);
+
+    this.enemy2 = this.physics.add.sprite(200,this.scaleH/1.7, 'newCreature').setBounce(1);
+
+
+
+
+
+    this.anims.create({
+      key: "walking",
+      frames: this.anims.generateFrameNumbers("newCreature", {
+        start: 0,
+        end:1,
+      }),
+      frameRate: 4,
+      repeat: -1,
+      
     });
-    if(this.seesPlayer){
-      this.tween.pause();
-    }else{
-      this.tween.play();
-    }
+
+    this.enemy2.anims.play("walking",true)
+
+       //Enemy is a json 'multiatlas' spritesheet with normal map
+    //    this.frameNames = this.anims.generateFrameNames('newCreature', {
+    //     start: 0,
+    //     end:1,
+    //     repeat: -1
+    // });
+    // this.enemyAlive = true;
+
+
+
+    //Enemy is a json 'multiatlas' spritesheet with normal map
+  //   this.frameNames = this.anims.generateFrameNames('creature', {
+  //     start: 1,
+  //     end: 2,
+  //     zeroPad: 3,
+  //     prefix: 'creature/walk/',
+  //     suffix: '.png',
+  // });
+
+  // //console.log(frameNames);
+
+  // this.config = {
+  //     key: 'walk',
+  //     frames: this.frameNames,
+  //     frameRate: 2,
+  //     repeat: -1
+  // };
+
+  // this.anims.create(this.config);
+  // this.enemy.play("walk")
+
+  // this.anims.create(this.config);
+  // this.enemy.play('walk')
+
+
+
+    this.enemy2.setScale(5)
+    // this.player.setScrollFactor(1,0)
+
+    this.enemy2.enableBody = true;
+//     //Collide with the walls
+    this.enemy2.collideWorldBounds = true;
+
+
+    this.physics.add.overlap(
+      this.bullets,
+      this.enemy2,
+      this.collBulletEnemy,
+      null,
+      this);
+
+//       this.physics.add.overlap(
+//         this.player,
+//         this.enemy2,
+//         this.collPlayerEnemy,
+//         null,
+//         this);
+
+
+// //Add enemy to the light2d 'pipeline'
+//  this.enemy2.setPipeline('Light2D');
   }
+
+  createEnemy3(){
+
+  }
+
+
+
+  // createEnemyTween(){
+  //   this.tween = this.tweens.add({
+  //     targets: this.enemy,
+  //     x: { from: this.enemy.x, to: this.enemy.x+1000 },
+  //     // alpha: { start: 0, to: 1 },
+  //     // alpha: 1,
+  //     // alpha: '+=1',
+  //     ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
+  //     duration: 2000,
+  //     repeat: -1,            // -1: infinity
+  //     yoyo: true,
+  //     flipX:true
+  //   });
+  //   if(this.enemy.seesPlayer){
+  //     this.tween.pause();
+  //     console.log('tween has stopped')
+  //   }else{
+  //     this.tween.play();
+  //     console.log('tween is playing')
+  //   }
+
+  //   this.tween2 = this.tweens.add({
+  //     targets: this.enemy2,
+  //     x: { from: this.enemy2.x, to: this.enemy2.x+1000 },
+  //     // alpha: { start: 0, to: 1 },
+  //     // alpha: 1,
+  //     // alpha: '+=1',
+  //     ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
+  //     duration: 2000,
+  //     repeat: -1,            // -1: infinity
+  //     yoyo: true,
+  //     flipX:true
+  //   });
+  //   if(this.enemy2.seesPlayer){
+  //     this.tween.pause();
+  //     console.log('tween has stopped')
+  //   }else{
+  //     this.tween.play();
+  //     console.log('tween is playing')
+  //   }
+  // }
+
+
 
   createAmmo(){
     this.cigs = this.physics.add.group({
@@ -310,7 +507,7 @@ class GameScene extends Phaser.Scene {
 
   createPlayer() {
     //13: add  player sprite to physics engine
-    this.player = this.physics.add.sprite(this.scaleW/4,this.scaleH/1.75, "man");
+    this.player = this.physics.add.sprite(this.scaleW/8,this.scaleH/1.75, "man");
     this.player.setScrollFactor(1,0)
     this.player.setScale(2)
     this.isPlayerAlive = true;
@@ -374,37 +571,25 @@ class GameScene extends Phaser.Scene {
   }
 
 
-  createBullets() {
+
+
+
+  // collBulletEnemy(bullet, enemy) {
+  //   this.hitCount++;
+
+  //   console.log('hitcount is ' + this.hitCount)
+  //   // this.bullet.setActive(false);
+  //   // this.bullet.setVisible(false);
+  //   this.changeTint(enemy);
+  //   this.seesPlayer = true;
+  //   // this.enemy.destroy();
+  //   // this.enemyAlive = false;
+  //   this.bullet.setActive(false);
+  //   this.bullet.setVisible(false);
     
-    //16 bullets array is a group inside arcade physics engine
-    this.bullets = this.physics.add.group({
-        classType: Bullet,
-        maxSize: this.ammo,
-        runChildUpdate: true
-    });
-
-    this.bullet; //stores the current bullet being shot
-    this.lastFired = 0;
-
-  }
-
-
-  collBulletEnemy(bullet, enemy) {
-    this.hitCount++;
-
-    console.log('hitcount is ' + this.hitCount)
-    // this.bullet.setActive(false);
-    // this.bullet.setVisible(false);
-    this.changeTint();
-    this.seesPlayer = true;
-    // this.enemy.destroy();
-    // this.enemyAlive = false;
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
+  //   this.bullet.destroy();
     
-    this.bullet.destroy();
-    
-  }
+  // }
 
 collPlayerEnemy(){
   if(this.player.x < this.enemy.x){
@@ -435,49 +620,7 @@ changePlayerTint(){
 }
 
 
-changeTint(){
 
-
-  if(this.hitCount == 1){
-    this.enemy.tint =  0xa00900;
-    // this.enemy.shake(500);
-    
-  }
-  else if(this.hitCount == 2){
-    this.enemy.tint =  0x7f0700;
-
-  }else if(this.hitCount == 3){
-    this.enemy.tint =  0x5c0500;
-
-  }else if(this.hitCount >3){
-    this.enemy.destroy();
-    this.enemyAlive = false;
-  }
-
-}
-
-
-
-  
-  followPlayer(){
-
-if(this.player.x > (this.enemy.x - this.scaleW/2) || this.player.x > (this.enemy.x + this.scaleW/2)){
- /*If seesPlayer is true, tweening stops*/
- /*seesPlayer can also be made true by shooting the enemy*/
-  this.seesPlayer = true;
-}
-      /*If to left*/
-  	 if (this.player.x < this.enemy.x && this.seesPlayer) {
-       this.enemy.flipX = true;
-      this.enemy.setVelocityX(-500);
-      /*If to right*/
-    } else  if (this.player.x > this.enemy.x && this.seesPlayer) {
-      this.enemy.setVelocityX(500);
-      this.enemy.flipX = false;
-
-    }
-  
-}
   
   update(time, delta) {
     this.keyCtrl = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
@@ -501,7 +644,7 @@ if(this.player.x > (this.enemy.x - this.scaleW/2) || this.player.x > (this.enemy
     } else if (this.cursors.right.isDown) {
      this.bg.tilePositionX = this.myCam.scrollX +=5;
      //this.furniture.tilePositionX = this.myCam.scrollX +=5;
-      this.player.setVelocityX(250);
+      this.player.setVelocityX(1000);
       this.player.anims.play("right", true);
 
     } else if(this.cursors.up.isDown){
@@ -567,7 +710,7 @@ if(this.player.x > (this.enemy.x - this.scaleW/2) || this.player.x > (this.enemy
     }
     
     var numCigs = cigs.length;
-    console.log(cigs.length)
+    // console.log(cigs.length)
     // console.log('numdoors: ' + numDoors)
   
     for (let i = 0; i < numCigs; i++) {
@@ -650,8 +793,11 @@ if(this.player.x > (this.enemy.x - this.scaleW/2) || this.player.x > (this.enemy
     //   this.player.x += this.playerSpeed;
     // }
 
-    if(this.enemyAlive){
-      this.followPlayer();
+    if(this.enemy.enemyAlive){
+      this.enemy.followPlayer(this, this.player.x);
+    }
+    if(this.enemy2.enemyAlive){
+      this.enemy2.followPlayer(this, this.player.x);
     }
   }
 

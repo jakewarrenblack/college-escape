@@ -42,8 +42,11 @@ loadFont(){
     this.load.image("button2", "../assets/blue_button02.png");
     this.load.image("cig","../assets/smokes.png");
     //this.load.setPath('../assets/');
-    this.load.multiatlas('creature', '../assets/creature_002.json');
+    // this.load.multiatlas('creature', '../assets/creature_002.json');
     this.load.multiatlas('creatureLeft', '../assets/creature_left.json')
+    this.load.multiatlas('creature2','../assets/creature2_002.json')
+    // this.load.atlas('newCreature', '../assets/creatureNewSprite.png', '../assets/creatureNewSprite.json');
+    //NEW CREATURE, MULTIATLAS
     //this.load.image("enemyOverlay", ["../assets/creature_lit.png", "../assets/creature_n.png"]);
     //this.load.image("door", "../assets/door.png");
   }
@@ -56,6 +59,14 @@ loadFont(){
     this.load.spritesheet("man", "../assets/cleric-horizontal-crouch-attack.png", {
       frameWidth: 114,
       frameHeight: 120,
+    });
+    this.load.spritesheet("newCreature", "../assets/creature3_lit.png", {
+      frameWidth: 50,
+      frameHeight: 40,
+    });
+     this.load.spritesheet("creature", "../assets/creature_lit.png", {
+      frameWidth: 50,
+      frameHeight: 40,
     });
 
 

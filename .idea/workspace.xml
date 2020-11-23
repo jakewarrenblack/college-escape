@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="20633593-01c4-49cf-9932-4dee595b99ad" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/College_Escape/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/College_Escape/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/College_Escape/scenes/BootScene.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/College_Escape/scenes/BootScene.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/College_Escape/scenes/GameScene.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/College_Escape/scenes/GameScene.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/creature.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/creature_left-n.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/creature_left_lit.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/creature_n - Copy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/assets/creaturez.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +42,7 @@
       <workItem from="1605820217879" duration="123000" />
       <workItem from="1605885843868" duration="1390000" />
       <workItem from="1605902927116" duration="677000" />
+      <workItem from="1606064189686" duration="1547000" />
     </task>
     <servers />
   </component>
