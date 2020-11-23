@@ -23,6 +23,7 @@ class GameScene extends Phaser.Scene {
   }
 
   create() { 
+    this.activeBullet;
     this.ammo = 9;
     this.ammoPrint = 10;
     this.createAudio();
@@ -67,12 +68,20 @@ class GameScene extends Phaser.Scene {
   createEnemies(){
     this.enemy = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk')
     this.enemy.createEnemyTween(this,this.enemy.x);
+    this.enemy.addBulletOverlap(this,this.bullet,this.player)
+    // this.enemy.collBulletEnemy(this.bullets);
     
     // this.enemy.createEnemyTween(this.enemy)
     this.enemy2 = new Enemy(this,this.randomPos(),this.scaleH/1.7,'newCreature','walking')
     this.enemy2.createEnemyTween(this,this.enemy2.x);
+    
+    
+    
+    
+    // this.enemy2.collBulletEnemy(this.bullet);
     // this.enemy.collBulletEnemy(this,this.bullets,this.enemy2);
 
+    // this.enemy.addBulletOverlap(this,this.player);
     // this.physics.add.overlap(
     //   this.bullets,
     //   this.enemy,
@@ -91,6 +100,27 @@ class GameScene extends Phaser.Scene {
   }
 
 
+
+
+  changeTint(){
+    if(this.enemy.hitCount == 1){
+      this.enemy.tint =  0xa00900;
+    }
+    else if(this.hitCount == 2){
+      this.tint =  0x7f0700;
+  
+    }else if(this.hitCount == 3){
+      this.tint =  0x5c0500;
+  
+    }else if(this.hitCount >3){
+      this.destroy();
+      this.enemyAlive = false;
+    }
+  
+  }
+
+
+
   createBullets() {
     
     //16 bullets array is a group inside arcade physics engine
@@ -101,27 +131,29 @@ class GameScene extends Phaser.Scene {
     });
 
     this.bullet; //stores the current bullet being shot
+    this.activeBullet = this.bullet;
     this.lastFired = 0;
+    
     // this.enemy.collBulletEnemy(this,this.bullets,this.enemy);
 
   }
   
-  collBulletEnemy(enemy) {
-    this.enemy.hitCount++;
+  // collBulletEnemy(enemy) {
+  //   enemy.hitCount++;
 
-    console.log('hitcount is ' + this.enemy.hitCount)
-    // this.bullet.setActive(false);
-    // this.bullet.setVisible(false);
-    this.enemy.changeTint();
-    this.enemy.seesPlayer = true;
-    // this.enemy.destroy();
-    // this.enemyAlive = false;
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
+  //   console.log('hitcount is ' + enemy.hitCount)
+  //   // this.bullet.setActive(false);
+  //   // this.bullet.setVisible(false);
+  //   enemy.changeTint();
+  //   enemy.seesPlayer = true;
+  //   // this.enemy.destroy();
+  //   // this.enemyAlive = false;
+  //   this.bullet.setActive(false);
+  //   this.bullet.setVisible(false);
     
-    this.bullet.destroy();
+  //   this.bullet.destroy();
     
-  }
+  // }
 
   
   randomPos(){
@@ -591,22 +623,24 @@ class GameScene extends Phaser.Scene {
     
   // }
 
-collPlayerEnemy(){
-  if(this.player.x < this.enemy.x){
-  this.enemy.x+=50;
-  }else{
-    this.enemy.x-=50;
-  }
-  this.playerDamage+=25;
-
-  this.changePlayerTint();
-}
+// collPlayerEnemy(player,enemy){
+//   if(player.x < this.enemy.x){
+    
+//   this.enemy.x+=50;
+//   }else{
+//     this.enemy.x-=50;
+//   }
+//   player.playerDamage+=25;
+//   console.log('collplayerenemy')
+//   this.changePlayerTint();
+// }
 
 changePlayerTint(){
+  console.log('changeplayertint')
   if(this.playerDamage == 25){
     
-    // this.cameras.main.shake(500);
-    // this.bg.setTint(0x5c0500);
+    this.cameras.main.shake(500);
+    this.bg.setTint(0x5c0500);
     // this.player.setTint(0x5c0500);
     // this.doors.setTint(0x5c0500);
   }else if(this.playerDamage == 50){
@@ -627,6 +661,12 @@ changePlayerTint(){
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);    // let keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     // let keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+
+
+if(this.enemy.hitCount != 0){
+  this.changeTint();
+}
+
 
 
     this.physics.add.collider(this.enemy,this.printer, this.hitObject, null, this);
@@ -673,10 +713,12 @@ changePlayerTint(){
         console.log("fire")
         this.bullet = this.bullets.get();
         
+        
         /*If bullet exists*/
         if (this.bullet)
         {
           console.log('numbullets: ' + this.bullet)
+          
           // this.player.setVelocityX(0)
           // this.player.anims.play("attack",true);
           /*Bullet moving right, seems uneccessary but will add player facing left eventually*/
@@ -685,6 +727,7 @@ changePlayerTint(){
             this.bullet.body.setSize(this.bullet.width * 1, this.bullet.height * 1);
             /*Prevent bullet spamming, can only fire once every second*/
             this.lastFired = time + 1000;
+            this.activeBullet = this.bullet;
 
             if(this.bullet.x > (this.player.x + this.scaleW)){
               this.bullet.setActive(false);
@@ -775,7 +818,7 @@ changePlayerTint(){
     //this.spotlight.x = this.player.x + 25;
 
 
-
+// this.collBulletEnemy(this.enemy);
     
 
     //console.log(this.player.score);

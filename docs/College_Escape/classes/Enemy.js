@@ -1,8 +1,8 @@
 console.log("Enemy class");
 
 class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y,spriteName,animKey) {        
-        super(scene, x, y, spriteName,animKey);
+    constructor(scene, x, y,spriteName,animKey,hitCount) {        
+        super(scene, x, y, spriteName,animKey,hitCount);
   
         //     this.enemy = this.physics.add.sprite(this.randomX,this.scaleH/1.7, 'creature', 'creature/walk/001.png').setBounce(1);
 
@@ -13,10 +13,12 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         this.seesPlayer = false;
         this.enemyAlive = true;
-        this.hitCount = 0;
+        // this.hitCount = 0;
         // this.randomX = Phaser.Math.Between(0,scene.bg.width);
         this.collideWorldBounds = true;
         this.enableBody = true;
+
+
 
         // scene.physics.add.overlap(
         //     scene.bullets,
@@ -52,22 +54,7 @@ this.setScale(5)
 
  
         
-    changeTint(){
-        if(this.hitCount == 1){
-            this.tint =  0xa00900;
-        }
-        else if(this.hitCount == 2){
-            this.tint =  0x7f0700;
-      
-        }else if(this.hitCount == 3){
-            this.tint =  0x5c0500;
-      
-        }else if(this.hitCount >3){
-            this.destroy();
-            this.enemyAlive = false;
-        }
-      
-      }
+
       
       
       
@@ -114,23 +101,51 @@ this.setScale(5)
         }
       }
 
-    //   collBulletEnemy(scene, bullet, enemy) {
-    //     enemy.hitCount++;
-    
-    //     console.log('hitcount is ' + this.hitCount)
-    //     // this.bullet.setActive(false);
-    //     // this.bullet.setVisible(false);
-    //     enemy.changeTint();
-    //     enemy.seesPlayer = true;
-    //     // this.enemy.destroy();
-    //     // this.enemyAlive = false;
-    //     bullet.setActive(false);
-    //     bullet.setVisible(false);
-        
-    //     bullet.destroy();
-        
+    //   addOverlap(scene,player){
+                  
+    //     scene.physics.add.overlap(
+    //         player,
+    //         this,
+    //         scene.collPlayerEnemy,
+    //         null,
+    //         this);
     //   }
+
     
+
+
+    collBulletEnemy(scene,bullet,player) {
+      player.hitCount++;
+  
+      console.log('hitcount is ' + player.hitCount)
+      // this.bullet.setActive(false);
+      // this.bullet.setVisible(false);
+      scene.changeTint();
+      player.seesPlayer = true;
+      // this.enemy.destroy();
+      // this.enemyAlive = false;
+      bullet.setActive(false);
+      bullet.setVisible(false);
+      
+      bullet.destroy();
+      
+    }
+
+
+      addBulletOverlap(scene,bullet,player){
+        scene.physics.add.overlap(
+          bullet,
+          this,
+          this.collBulletEnemy(scene, bullet, player),
+          null,
+          scene);
+      }
+
+
+
+    update(time, delta){
+        
+    }
 
 
 }
