@@ -41,6 +41,7 @@ loadFont(){
     this.load.image("button1", "../assets/blue_button01.png");
     this.load.image("button2", "../assets/blue_button02.png");
     this.load.image("cig","../assets/smokes.png");
+    this.load.image("floor", "../assets/floor.png");
     //this.load.setPath('../assets/');
     // this.load.multiatlas('creature', '../assets/creature_002.json');
     this.load.multiatlas('creatureLeft', '../assets/creature_left.json')
