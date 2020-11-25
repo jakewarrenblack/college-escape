@@ -47,40 +47,66 @@ class GameScene extends Phaser.Scene {
   }
 
   createEnemies(){
-    this.enemy1 = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk')
-    this.enemy1.createEnemyTween(this,this.enemy1.x);
-    this.physics.add.collider(this.enemy1,this.platform);
+    this.enemies = [];
 
-    this.enemy2 = new Enemy(this,this.randomPos(),this.scaleH/1.7,'newCreature','walking')
-    this.enemy2.createEnemyTween(this,this.enemy2.x);
-    this.physics.add.collider(this.enemy2,this.platform);
-
-    this.enemies = [this.enemy1,this.enemy2]
-  }
-
-  collideBulletsPlayer(){
-    for(var i=1; i<this.enemies.length+1; i++){
-      this.physics.add.overlap(
-        this.bullets,
-        this['enemy' + i],
-        this['collBulletEnemy' + i],
-        null,
-        this
-      );
+    for(var i=0; i<2; i++){
+      this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk')
+      this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
+      console.log('enemy1x ' + this['enemy'+i].x)
+      this.physics.add.collider(this['enemy'+i],this.platform);
+      console.log('enemy'+i +' location is ' + this['enemy'+i].x)
+      this.enemies.push(this['enemy'+i]);
+    }
+    for(var i=2;  i<4; i++){
+      this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'newCreature','walking')
+      this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
+      this.physics.add.collider(this['enemy'+i],this.platform);
+      console.log('enemy'+i +' location is ' + this['enemy'+i].x)
+      this.enemies.push(this['enemy'+i]);
     }
 
-    for(var i=1; i<this.enemies.length+1; i++){
-    this.physics.add.overlap(
-      this.player,
-      this['enemy' + i],
-      this['collPlayerEnemy' + i],
-      null,
-      this
-    );
+    console.log('arraylength: ' + this.enemies.length)
+  }
+
+  createEnemies(){
+    this.enemyArray = [];
+    
+    for(var i=0; i<6; i++){
+      this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk');
+      this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
+      this.enemies.push(this['enemy'+i]);
     }
 
-    this.handlePlayerEnemyCollider = this.physics.add.collider(this.enemies,this.player);
+    this.enemies = this.add.group(config);
+
+    this.config = {
+      key: "creature",
+      repeat: 5,
+      score: 5,
+      setXY: {
+        x: this.scaleW/5,
+        y: this.scaleH/2,
+        stepX: this.scaleW/3,
+        stepY: 0,
+      }
+    }
+
+    this.enemies.addMultiple(this.enemyArray); 
   }
+
+  collBulletEnemy(){
+    this.enemies.children.each(function(b) {
+
+      if (b.enemyAlive) {
+        this.bullet.setActive(false);
+        this.bullet.setVisible(false);
+        this.bullet.destroy();
+        this.enemy1.hitCount++;
+        console.log("enemy1 hitCount: " + this.enemy1.hitCount);
+      }
+  }.bind(this));
+  }
+
 
   changeTint(){
     this.enemies = [this.enemy1,this.enemy2]
@@ -134,6 +160,7 @@ changePlayerTint(){
 
 
   collBulletEnemy1(bullet, enemy1) {
+    this.bulletCollision1 = true;
     console.log(bullet);
     this.bullet.setActive(false);
     this.bullet.setVisible(false);
@@ -143,6 +170,7 @@ changePlayerTint(){
   }
 
   collBulletEnemy2(bullet, enemy2) {
+    this.bulletCollision2 = true;
     console.log(bullet);
     this.bullet.setActive(false);
     this.bullet.setVisible(false);
@@ -161,11 +189,34 @@ changePlayerTint(){
     });
 
     this.bullet; //stores the current bullet being shot
-    this.activeBullet = this.bullet;
     this.lastFired = 0;
     
     // this.enemy.collBulletEnemy(this,this.bullets,this.enemy);
 
+  }
+
+  collideBulletsPlayer(){
+    for(var i=0; i<this.enemies.length; i++){
+      this.physics.add.overlap(
+        this.bullets,
+        this['enemy' + i],
+        this['collBulletEnemy' + i],
+        null,
+        this
+      );
+    }
+
+    for(var i=0; i<this.enemies.length; i++){
+    this.physics.add.overlap(
+      this.player,
+      this['enemy' + i],
+      this['collPlayerEnemy' + i],
+      null,
+      this
+    );
+    }
+
+    this.handlePlayerEnemyCollider = this.physics.add.collider(this.enemies,this.player);
   }
   
   randomPos(){
@@ -429,8 +480,7 @@ changePlayerTint(){
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     // this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-console.log('player velocity' + this.player.velocityX)
-console.log('angle: ' + this.player.angle)
+console.log('seesplayer : ' + this.enemy1.seesPlayer)
 
     this.changeTint();
     this.changePlayerTint();
@@ -500,7 +550,9 @@ if(!this.touchingEnemy1 && !this.touchingEnemy2){
               this.bullet.setActive(false);
             }
 
-        }}
+        }
+      }
+
       else if(this.keyCtrl.isDown){
         this.player.anims.play("crouch",true);
       

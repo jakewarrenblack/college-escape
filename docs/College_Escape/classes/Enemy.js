@@ -19,6 +19,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.enableBody = true;
         this.hitCount = 0;
         this.body.immovable = true;
+        this.touchingPlayer = false;
 
 
 
@@ -63,7 +64,7 @@ this.setScale(5)
       createEnemyTween(scene,x){
         this.tween = scene.tweens.add({
           targets: this,
-          x: { from: this.x, to: this.x+800 },
+          x: { from: x, to: x+300 },
           // alpha: { start: 0, to: 1 },
           // alpha: 1,
           // alpha: '+=1',
@@ -73,12 +74,12 @@ this.setScale(5)
           yoyo: true,
           flipX:true
         });
-        if(this.seesPlayer){
+        if(this.seesPlayer === true){
           this.tween.pause();
           console.log('tween has stopped')
         }else{
-          this.tween.play();
-          console.log('tween is playing')
+          this.tween.resume();
+          console.log(this + ' tween is playing')
         }
       }
 }
