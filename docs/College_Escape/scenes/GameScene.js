@@ -48,10 +48,10 @@ class GameScene extends Phaser.Scene {
 
   createEnemies(){
     this.enemies = [];
-
+    
     for(var i=1; i<4; i++){
       this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk')
-      this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
+      // this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
       console.log('enemy1x ' + this['enemy'+i].x)
       this.physics.add.collider(this['enemy'+i],this.platform);
       console.log('enemy'+i +' location is ' + this['enemy'+i].x)
@@ -59,7 +59,7 @@ class GameScene extends Phaser.Scene {
     }
     for(var i=4;  i<7; i++){
       this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'newCreature','walking')
-      this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
+      // this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
       this.physics.add.collider(this['enemy'+i],this.platform);
       console.log('enemy'+i +' location is ' + this['enemy'+i].x)
       this.enemies.push(this['enemy'+i]);
@@ -91,17 +91,17 @@ class GameScene extends Phaser.Scene {
 }
 
 changePlayerTint(){
-  if(this.playerHitCount== 1){
+  if(this.playerHitCount>5){
     this.player.tint = 0xa00900;
-  }else if(this.playerHitCount == 2){
+  } if(this.playerHitCount >10){
     this.player.tint = 0x7f0700;
-  }else if(this.playerHitCount== 3){
+  } if(this.playerHitCount>15){
     this.player.tint = 0x5c0500;
-  }else if(this.playerHitCount >3){
+  } if(this.playerHitCount >20){
     this.isPlayerAlive = false;
     this.player.setVisible(false);
     this.player.setActive(false);
-    // this.gameOver();
+    this.gameOver();
   }
 }
 
@@ -109,49 +109,66 @@ changePlayerTint(){
     this.touchingEnemy1 = true;
     // this.player.body.angularVelocity = -40;
     // this.player.setBounce(2,2)
-    this.time.delayedCall(1000, this.hitCountIncrease, [], this);
+    this.time.delayedCall(500, this.hitCountIncrease, [], this);
     // this.changePlayerTint();
-
+    if(this.playerMelee){
+      this.enemy1.hitCount+=0.5;
+    }
   }
 
   collPlayerEnemy2() {
     this.touchingEnemy2 = true;
   // this.player.body.angularVelocity = -40;
-  this.time.delayedCall(1000, this.hitCountIncrease, [], this);
+  this.time.delayedCall(500, this.hitCountIncrease, [], this);
   // this.changePlayerTint();
   // this.player.velocityX*=-1;
+  if(this.playerMelee){
+    this.enemy2.hitCount+=0.5;
+  }
 }
 
   collPlayerEnemy3() {
     this.touchingEnemy3 = true;
   // this.player.body.angularVelocity = -40;
     // this.playerHitCount++;
-    this.time.delayedCall(1000, this.hitCountIncrease, [], this);
+    this.time.delayedCall(500, this.hitCountIncrease, [], this);
     // this.player.velocityX*=-1;
+    if(this.playerMelee){
+      this.enemy3.hitCount+=0.5;
+    }
 }
 
 collPlayerEnemy4() {
   this.touchingEnemy4 = true;
 // this.player.body.angularVelocity = -40;
-this.time.delayedCall(1000, this.hitCountIncrease, [], this);
+this.time.delayedCall(500, this.hitCountIncrease, [], this);
 // this.changePlayerTint();
 // this.player.velocityX*=-1;
+if(this.playerMelee){
+  this.enemy4.hitCount+=0.5;
+}
 }
 
 collPlayerEnemy5() {
   this.touchingEnemy5 = true;
 // this.player.body.angularVelocity = -40;
-this.time.delayedCall(1000, this.hitCountIncrease, [], this);
+this.time.delayedCall(500, this.hitCountIncrease, [], this);
 // this.changePlayerTint();
 // this.player.velocityX*=-1;
+if(this.playerMelee){
+  this.enemy5.hitCount+=0.5;
+}
 }
 
 collPlayerEnemy6() {
   this.touchingEnemy6 = true;
 // this.player.body.angularVelocity = -40;
-this.time.delayedCall(3000, this.hitCountIncrease, [], this);
+this.time.delayedCall(500, this.hitCountIncrease, [], this);
 // this.changePlayerTint();
 // this.player.velocityX*=-1;
+if(this.playerMelee){
+  this.enemy6.hitCount+=0.5;
+}
 }
 
 hitCountIncrease(){
@@ -265,7 +282,8 @@ hitCountIncrease(){
   }
   
   randomPos(){
-    return Phaser.Math.Between(500,this.bg.width-200);
+    /*Randomly position enemies, but not right at the exit or right in front of the player.*/
+    return Phaser.Math.Between(this.player.x+this.scaleW/2,this.bg.width-200);
 }   
 
   createExit(){
@@ -451,7 +469,8 @@ hitCountIncrease(){
     this.player.body.gravity.y = 1500;
     this.playerHitCount = 0;
     this.physics.add.collider(this.player,this.platform);
-
+    /*Stops the player being bounced around like mad if he's stuck between the enemy and the worldBounds.*/
+    this.player.body.setMaxSpeed(1000);
 
     
     this.player.setScrollFactor(1,0)
@@ -527,6 +546,10 @@ hitCountIncrease(){
     this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     // this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 
+    
+
+
+    
     this.changeTint();
     this.changePlayerTint();
 
@@ -561,7 +584,10 @@ hitCountIncrease(){
         else if(this.keyShift.isDown){
           console.log('shift pressed')
           // this.player.setVelocityX(0).setBounce(1);
-          this.player.anims.play("melee",true)
+          this.player.anims.play("melee",true);
+
+          this.playerMelee = true;
+
       }
 
 
@@ -606,8 +632,8 @@ hitCountIncrease(){
         // this.player.setVelocityX(0).setBounce(1)
         this.player.anims.play("attack",true);
       }
-      else if(this.player.x<-5 || this.player.x == this.bg.width+5){
-        this.gameOver();
+      else if(this.player.x<10 || this.player.x == this.bg.width){
+      //  this.player.body.setMass(100000);
       }
     
 

@@ -61,25 +61,27 @@ this.setScale(5)
           
       }
 
-      createEnemyTween(scene,x){
-        this.tween = scene.tweens.add({
-          targets: this,
-          x: { from: x, to: x+300 },
-          // alpha: { start: 0, to: 1 },
-          // alpha: 1,
-          // alpha: '+=1',
-          ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
-          duration: 2000,
-          repeat: -1,            // -1: infinity
-          yoyo: true,
-          flipX:true
-        });
-        if(this.seesPlayer === true){
-          this.tween.pause();
-          console.log('tween has stopped')
-        }else{
-          this.tween.resume();
-          console.log(this + ' tween is playing')
-        }
-      }
+      // createEnemyTween(scene,x){
+      //   this.tween = scene.tweens.add({
+      //     targets: this,
+      //     x: { from: x, to: x+300 },
+      //     // alpha: { start: 0, to: 1 },
+      //     // alpha: 1,
+      //     // alpha: '+=1',
+      //     ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      //     duration: 2000,
+      //     repeat: -1,            // -1: infinity
+      //     yoyo: true,
+      //     flipX:true
+      //   });
+      //   if(this.seesPlayer){
+      //     this.tween.pause();
+      //     console.log('tween has stopped')
+      //   }else{
+      //     this.tween.resume();
+      //     console.log(this + ' tween is playing')
+      //   }
+      // }
+
+
 }
