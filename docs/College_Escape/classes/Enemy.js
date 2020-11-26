@@ -46,6 +46,7 @@ this.setScale(5)
     followPlayer(scene, x){
       
       if(x > (this.x - scene.scaleW/2) || x > (this.x + scene.scaleW/2) ){
+        // this.music.play("roar")
        /*If seesPlayer is true, tweening stops*/
        /*seesPlayer can also be made true by shooting the enemy*/
         this.seesPlayer = true;

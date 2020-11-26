@@ -87,6 +87,12 @@ loadFont(){
     this.load.audio("bgmusic", [
       "../assets/soundtrack.mp3",
     ]);
+    this.load.audio("roar", [
+      "../assets/roar.ogg",
+    ]);
+    this.load.audio("death", [
+      ("../assets/death.ogg")
+    ]);
   }
 
   create() {

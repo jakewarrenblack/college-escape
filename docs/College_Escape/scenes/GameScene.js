@@ -149,7 +149,30 @@ changePlayerTint(){
     this.isPlayerAlive = false;
     this.player.setVisible(false);
     this.player.setActive(false);
-    this.gameOver();
+    this.music.stop();
+    
+    //08: fading out
+    this.time.delayedCall(
+      500,
+      function () {
+        this.cameras.main.fade(2500);
+      },
+      [],
+      this
+    );
+  
+    // restart game
+    this.time.delayedCall(
+      1000,
+      function () {
+        
+        this.gameOver();
+      },
+      [],
+      this
+    );
+    
+    
   }
 }
 
@@ -438,6 +461,7 @@ hitCountIncrease(){
     this.music = this.sound.add("bgmusic");
     this.music.play();
     this.music.loop = true;
+    this.deathSound = this.sound.add("death");
   }
 
   createInput() {
@@ -849,15 +873,17 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
 
 
   gameOver() {
+    
     this.time.delayedCall(
       500,
       function () {
-        this.cameras.main.fade(2500);
+        this.deathSound.play();
+        this.scene.start("GameOver");
       },
       [],
       this
     );
-    this.scene.start("GameOver");
+    
   }
 
   
