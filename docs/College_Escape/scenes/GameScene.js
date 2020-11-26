@@ -25,12 +25,13 @@ class GameScene extends Phaser.Scene {
     this.activeBullet;
     this.ammo = 9;
     this.ammoPrint = 10;
+    this.score = 0;
     this.createAudio();
     this.createInput();
     this.createBackground();
     this.createFloor();
     
-
+    this.deadEnemies = [];
     this.createExit();
     this.createCamera();
     this.createWindows();
@@ -75,7 +76,7 @@ class GameScene extends Phaser.Scene {
   changeTint(){
     this.enemies = [this.enemy1,this.enemy2,this.enemy3,this.enemy4,this.enemy5,this.enemy5,this.enemy6]
     for (let i = 1; i < this.enemies.length+1; i++) {
-        this.enemies.forEach(function(enemy){
+        this.enemies.forEach((enemy) =>{
             if (enemy.hitCount == 1) {
               enemy.tint =  0xa00900;
             }else if(enemy.hitCount == 2){
@@ -83,11 +84,58 @@ class GameScene extends Phaser.Scene {
             }else if(enemy.hitCount ==3){
               enemy.tint =  0x5c0500;
             }else if(enemy.hitCount >3){
-              enemy.destroy();
-              enemy.enemyAlive = false;
+
+              enemy.setActive(false);
+              enemy.setVisible(false)
+
+              if(enemy.enemyAlive){
+                this.deadEnemies.push(enemy)
+                enemy.destroy();
+                enemy.enemyAlive = false;
+              }
             }
         });
       }
+}
+
+
+
+checkDead(){
+  if(this.enemy1.enemyAlive){
+    this.deadEnemies.push(this.enemy1)
+    this.enemy1.destroy();
+    this.enemy1.enemyAlive = false;
+  }
+  else if(this.enemy2.enemyAlive){
+    this.deadEnemies.push(this.enemy2)
+    this.enemy2.destroy();
+    this.enemy2.enemyAlive = false;
+
+  }
+  else if(this.enemy3.enemyAlive){
+    this.deadEnemies.push(this.enemy3)
+    this.enemy3.destroy();
+    this.enemy3.enemyAlive = false;
+
+  }
+  else if(this.enemy4.enemyAlive){
+    this.deadEnemies.push(this.enemy4)
+    this.enemy4.destroy();
+    this.enemy4.enemyAlive = false;
+
+  }
+  else if(this.enemy5.enemyAlive){
+    this.deadEnemies.push(this.enemy5)
+    this.enemy5.destroy();
+    this.enemy5.enemyAlive = false;
+
+  }
+  else if(this.enemy6.enemyAlive){
+    this.deadEnemies.push(this.enemy6)
+    this.enemy6.destroy();
+    this.enemy6.enemyAlive = false;
+
+  }
 }
 
 changePlayerTint(){
@@ -283,7 +331,7 @@ hitCountIncrease(){
   
   randomPos(){
     /*Randomly position enemies, but not right at the exit or right in front of the player.*/
-    return Phaser.Math.Between(this.player.x+this.scaleW/2,this.bg.width-200);
+    return Phaser.Math.Between(this.scaleW+this.scaleW/8,this.bg.width-200);
 }   
 
   createExit(){
@@ -352,21 +400,19 @@ hitCountIncrease(){
 
   createText() {
 
-    this.infoTxt = this.add.text(50,50, 16, 'text', { fontSize: '100px', fill: '#fff' });
+    this.infoTxt = this.add.text(50,50, 16, 'text', { fontSize: '50px', fill: '#fff' });
     this.infoTxt.setScrollFactor(0)
-    /*this.scoreText = this.add.text(16, 16, "score: 0", {
-      fontSize: "32px",
-      fill: "#f00",
-      
-    });*/
-    //13 bitmapFont
-    // this.scoreText = this.add.bitmapText(16, 16, 'font', 'score: 0');
-    // this.scoreText.setScale(0.25);
-    // this.scoreText.setTint(0xff0000, 0xffffff, 0xff0000,0xffffff);
-    // this.scoreText.setDepth();
-    this.infoTxt.setScale(10);
+
+    this.scoreTxt = this.add.text(this.scaleW-400,50, 16, 'text', { fontSize: '50px', fill: '#fff' });
+    this.scoreTxt.setScrollFactor(0)
+
+    this.infoTxt.setScale(5);
     this.infoTxt.setTint(0xff00ff, 0xffffff, 0xff00ff,0xffffff);
     this.infoTxt.setDepth();
+
+    this.scoreTxt.setScale(5);
+    this.scoreTxt.setTint(0xff00ff, 0xffffff, 0xff00ff,0xffffff);
+    this.scoreTxt.setDepth();
 
     // this.font = this.add.bitmapText(20,80,"font","Ammo: " + this.ammo,15);
   }
@@ -544,10 +590,13 @@ hitCountIncrease(){
     this.keyCtrl = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
-    // this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-
     
 
+
+
+
+// console.log('num dead enemies: ' + this.deadEnemies.length);
+this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
 
     
     this.changeTint();
@@ -646,9 +695,10 @@ hitCountIncrease(){
     }
   }else{
     if(this.touchingEnemy1 || this.touchingEnemy2 || this.touchingEnemy3 || this.touchingEnemy4 || this.touchingEnemy5 || this.touchingEnemy6){
+      this.player.anims.play("crouch",true);
       this.player.body.setBounce(2,2);
       this.cameras.main.shake(500);
-      this.player.anims.play("crouch",true);
+      
       
     }else{
       this.player.body.setBounce(0,0);
@@ -716,6 +766,7 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
 
 
   this.infoTxt.setText('Ammo: ' + this.ammoPrint) 
+
     
     var numDoors = doors.length;
     // console.log('numdoors: ' + numDoors)
@@ -776,6 +827,7 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
     if(this.enemy6.enemyAlive){
       this.enemy6.followPlayer(this, this.player.x);
     }
+   
   }
 
 

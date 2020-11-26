@@ -11,6 +11,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   
         this.body.setSize(this.width, this.height -10);
 
+      
         this.seesPlayer = false;
         this.enemyAlive = true;
         // this.hitCount = 0;
@@ -20,6 +21,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.hitCount = 0;
         this.body.immovable = true;
         this.touchingPlayer = false;
+        this.dead = [];
+        
 
 
 
@@ -61,27 +64,28 @@ this.setScale(5)
           
       }
 
+
+
       // createEnemyTween(scene,x){
       //   this.tween = scene.tweens.add({
       //     targets: this,
       //     x: { from: x, to: x+300 },
-      //     // alpha: { start: 0, to: 1 },
-      //     // alpha: 1,
-      //     // alpha: '+=1',
-      //     ease: 'Linear',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      //     ease: 'Linear', 
       //     duration: 2000,
-      //     repeat: -1,            // -1: infinity
+      //     repeat: -1,  
       //     yoyo: true,
-      //     flipX:true
+      //     flipX:true,
+      //     paused:false
       //   });
-      //   if(this.seesPlayer){
+      //   if (this.tween.isPlaying() && this.seesPlayer)
+      //   {
       //     this.tween.pause();
-      //     console.log('tween has stopped')
-      //   }else{
+      //       console.log('tween paused')
+      //     }
+      //   else
+      //   {
       //     this.tween.resume();
-      //     console.log(this + ' tween is playing')
+      //       console.log('tween resumed')
       //   }
       // }
-
-
 }
