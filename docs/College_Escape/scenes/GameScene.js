@@ -49,7 +49,7 @@ class GameScene extends Phaser.Scene {
   createEnemies(){
     this.enemies = [];
 
-    for(var i=0; i<2; i++){
+    for(var i=1; i<4; i++){
       this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk')
       this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
       console.log('enemy1x ' + this['enemy'+i].x)
@@ -57,7 +57,7 @@ class GameScene extends Phaser.Scene {
       console.log('enemy'+i +' location is ' + this['enemy'+i].x)
       this.enemies.push(this['enemy'+i]);
     }
-    for(var i=2;  i<4; i++){
+    for(var i=4;  i<7; i++){
       this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'newCreature','walking')
       this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
       this.physics.add.collider(this['enemy'+i],this.platform);
@@ -65,52 +65,16 @@ class GameScene extends Phaser.Scene {
       this.enemies.push(this['enemy'+i]);
     }
 
+    
+
     console.log('arraylength: ' + this.enemies.length)
   }
 
-  createEnemies(){
-    this.enemyArray = [];
-    
-    for(var i=0; i<6; i++){
-      this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk');
-      this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
-      this.enemies.push(this['enemy'+i]);
-    }
-
-    this.enemies = this.add.group(config);
-
-    this.config = {
-      key: "creature",
-      repeat: 5,
-      score: 5,
-      setXY: {
-        x: this.scaleW/5,
-        y: this.scaleH/2,
-        stepX: this.scaleW/3,
-        stepY: 0,
-      }
-    }
-
-    this.enemies.addMultiple(this.enemyArray); 
-  }
-
-  collBulletEnemy(){
-    this.enemies.children.each(function(b) {
-
-      if (b.enemyAlive) {
-        this.bullet.setActive(false);
-        this.bullet.setVisible(false);
-        this.bullet.destroy();
-        this.enemy1.hitCount++;
-        console.log("enemy1 hitCount: " + this.enemy1.hitCount);
-      }
-  }.bind(this));
-  }
 
 
   changeTint(){
-    this.enemies = [this.enemy1,this.enemy2]
-    for (let i = 0; i < this.enemies.length; i++) {
+    this.enemies = [this.enemy1,this.enemy2,this.enemy3,this.enemy4,this.enemy5,this.enemy5,this.enemy6]
+    for (let i = 1; i < this.enemies.length+1; i++) {
         this.enemies.forEach(function(enemy){
             if (enemy.hitCount == 1) {
               enemy.tint =  0xa00900;
@@ -137,7 +101,7 @@ changePlayerTint(){
     this.isPlayerAlive = false;
     this.player.setVisible(false);
     this.player.setActive(false);
-    this.gameOver();
+    // this.gameOver();
   }
 }
 
@@ -145,7 +109,7 @@ changePlayerTint(){
     this.touchingEnemy1 = true;
     // this.player.body.angularVelocity = -40;
     // this.player.setBounce(2,2)
-    // this.playerHitCount++;
+    this.time.delayedCall(1000, this.hitCountIncrease, [], this);
     // this.changePlayerTint();
 
   }
@@ -153,9 +117,46 @@ changePlayerTint(){
   collPlayerEnemy2() {
     this.touchingEnemy2 = true;
   // this.player.body.angularVelocity = -40;
-    // this.playerHitCount++;
+  this.time.delayedCall(1000, this.hitCountIncrease, [], this);
   // this.changePlayerTint();
   // this.player.velocityX*=-1;
+}
+
+  collPlayerEnemy3() {
+    this.touchingEnemy3 = true;
+  // this.player.body.angularVelocity = -40;
+    // this.playerHitCount++;
+    this.time.delayedCall(1000, this.hitCountIncrease, [], this);
+    // this.player.velocityX*=-1;
+}
+
+collPlayerEnemy4() {
+  this.touchingEnemy4 = true;
+// this.player.body.angularVelocity = -40;
+this.time.delayedCall(1000, this.hitCountIncrease, [], this);
+// this.changePlayerTint();
+// this.player.velocityX*=-1;
+}
+
+collPlayerEnemy5() {
+  this.touchingEnemy5 = true;
+// this.player.body.angularVelocity = -40;
+this.time.delayedCall(1000, this.hitCountIncrease, [], this);
+// this.changePlayerTint();
+// this.player.velocityX*=-1;
+}
+
+collPlayerEnemy6() {
+  this.touchingEnemy6 = true;
+// this.player.body.angularVelocity = -40;
+this.time.delayedCall(3000, this.hitCountIncrease, [], this);
+// this.changePlayerTint();
+// this.player.velocityX*=-1;
+}
+
+hitCountIncrease(){
+  this.playerHitCount++;
+  console.log('player hitcount is: '+ this.playerHitCount)
 }
 
 
@@ -179,6 +180,50 @@ changePlayerTint(){
     console.log("enemy2 hitCount: " + this.enemy2.hitCount);
   }
 
+  collBulletEnemy3(bullet, enemy3) {
+    this.bulletCollision3 = true;
+    console.log(bullet);
+    this.bullet.setActive(false);
+    this.bullet.setVisible(false);
+    this.bullet.destroy();
+    this.enemy3.hitCount++;
+    console.log("enemy3 hitCount: " + this.enemy3.hitCount);
+  }
+
+  collBulletEnemy4(bullet, enemy4) {
+    this.bulletCollision4 = true;
+    console.log(bullet);
+    this.bullet.setActive(false);
+    this.bullet.setVisible(false);
+    this.bullet.destroy();
+    this.enemy4.hitCount++;
+    console.log("enemy4 hitCount: " + this.enemy4.hitCount);
+  }
+
+  collBulletEnemy5(bullet, enemy5) {
+    this.bulletCollision5 = true;
+    console.log(bullet);
+    this.bullet.setActive(false);
+    this.bullet.setVisible(false);
+    this.bullet.destroy();
+    this.enemy5.hitCount++;
+    console.log("enemy5 hitCount: " + this.enemy5.hitCount);
+  }
+  
+  collBulletEnemy6(bullet, enemy6) {
+    this.bulletCollision6 = true;
+    console.log(bullet);
+    this.bullet.setActive(false);
+    this.bullet.setVisible(false);
+    this.bullet.destroy();
+    this.enemy6.hitCount++;
+    console.log("enemy6 hitCount: " + this.enemy6.hitCount);
+  }
+
+
+
+
+
   createBullets() {
     
     //16 bullets array is a group inside arcade physics engine
@@ -196,7 +241,7 @@ changePlayerTint(){
   }
 
   collideBulletsPlayer(){
-    for(var i=0; i<this.enemies.length; i++){
+    for(var i=1; i<this.enemies.length+1; i++){
       this.physics.add.overlap(
         this.bullets,
         this['enemy' + i],
@@ -206,8 +251,8 @@ changePlayerTint(){
       );
     }
 
-    for(var i=0; i<this.enemies.length; i++){
-    this.physics.add.overlap(
+    for(var i=1; i<this.enemies.length+1; i++){
+    this.physics.add.collider(
       this.player,
       this['enemy' + i],
       this['collPlayerEnemy' + i],
@@ -406,8 +451,9 @@ changePlayerTint(){
     this.player.body.gravity.y = 1500;
     this.playerHitCount = 0;
     this.physics.add.collider(this.player,this.platform);
-    this.physics.add.collider(this.player,this.enemy1);
-    this.physics.add.collider(this.player,this.enemy2);
+
+
+    
     this.player.setScrollFactor(1,0)
     this.player.setScale(2)
     this.isPlayerAlive = true;
@@ -480,7 +526,6 @@ changePlayerTint(){
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     // this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-console.log('seesplayer : ' + this.enemy1.seesPlayer)
 
     this.changeTint();
     this.changePlayerTint();
@@ -488,7 +533,7 @@ console.log('seesplayer : ' + this.enemy1.seesPlayer)
     //this.enemy.setVelocityX(80);
     var doors = this.doors.getChildren();
     var cigs = this.cigs.getChildren();
-if(!this.touchingEnemy1 && !this.touchingEnemy2){
+    if(!this.touchingEnemy1 && !this.touchingEnemy2 && !this.touchingEnemy3 && !this.touchingEnemy4 && !this.touchingEnemy5 && !this.touchingEnemy6){
     if (this.cursors.left.isDown) {
       this.bg.tilePositionX = this.myCam.scrollX -=5;
       //this.furniture.tilePositionX = this.myCam.scrollX -=5;
@@ -561,6 +606,9 @@ if(!this.touchingEnemy1 && !this.touchingEnemy2){
         // this.player.setVelocityX(0).setBounce(1)
         this.player.anims.play("attack",true);
       }
+      else if(this.player.x<-5 || this.player.x == this.bg.width+5){
+        this.gameOver();
+      }
     
 
     else {
@@ -571,7 +619,7 @@ if(!this.touchingEnemy1 && !this.touchingEnemy2){
       //console.log('running')
     }
   }else{
-    if(this.touchingEnemy1 || this.touchingEnemy2){
+    if(this.touchingEnemy1 || this.touchingEnemy2 || this.touchingEnemy3 || this.touchingEnemy4 || this.touchingEnemy5 || this.touchingEnemy6){
       this.player.body.setBounce(2,2);
       this.cameras.main.shake(500);
       this.player.anims.play("crouch",true);
@@ -617,10 +665,7 @@ if(!this.touchingEnemy1 && !this.touchingEnemy2){
 }
 
 
-/*Prevent bounce agasint world bounds*/
-if(this.player.x === 0 || this.player.x === this.bg.width){
-  this.player.body.setVelocityX(0).setBounce(0,0);
-}
+
 
 if(this.player.x > this.enemy1.x || this.player.x < this.enemy1.x ){
   this.touchingEnemy1 = false;
@@ -630,7 +675,20 @@ if(this.player.x > this.enemy2.x || this.player.x < this.enemy2.x){
   this.touchingEnemy2 = false;
 }
 
- 
+if(this.player.x > this.enemy3.x || this.player.x < this.enemy3.x){
+  this.touchingEnemy3 = false;
+}
+if(this.player.x > this.enemy4.x || this.player.x < this.enemy4.x){
+  this.touchingEnemy4 = false;
+}
+if(this.player.x > this.enemy5.x || this.player.x < this.enemy5.x){
+  this.touchingEnemy5 = false;
+}
+if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
+  this.touchingEnemy6 = false;
+}
+
+
   this.infoTxt.setText('Ammo: ' + this.ammoPrint) 
     
     var numDoors = doors.length;
@@ -679,6 +737,18 @@ if(this.player.x > this.enemy2.x || this.player.x < this.enemy2.x){
     }
     if(this.enemy2.enemyAlive){
       this.enemy2.followPlayer(this, this.player.x);
+    }
+    if(this.enemy3.enemyAlive){
+      this.enemy3.followPlayer(this, this.player.x);
+    }
+    if(this.enemy4.enemyAlive){
+      this.enemy4.followPlayer(this, this.player.x);
+    }
+    if(this.enemy5.enemyAlive){
+      this.enemy5.followPlayer(this, this.player.x);
+    }
+    if(this.enemy6.enemyAlive){
+      this.enemy6.followPlayer(this, this.player.x);
     }
   }
 
