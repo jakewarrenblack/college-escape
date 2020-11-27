@@ -28,7 +28,6 @@ loadFont(){
     this.load.image("bullet", "../assets/smoke.png");
     this.load.image('title-door', '../assets/title_door.png');
     this.load.image("background", ["../assets/background_ext_lit.png", "../assets/background_ext_n.png"]);
-    this.load.image("backgroundOverlay", '../assets/background-overlay.png');
     this.load.image("exit", ["../assets/exit.png", "../assets/exit_n.png"]);
     this.load.image("window", ["../assets/window_lit.png", "../assets/window_new_n.png"]);
     //this.load.image("player", "../assets/player.png");
@@ -43,6 +42,7 @@ loadFont(){
     this.load.image("cig","../assets/smokes.png");
     this.load.image("floor", "../assets/floor.png");
     this.load.image("deathScreen", "../assets/deathscreen.png")
+    this.load.image("winScreen", "../assets/winScreen.png")
     //this.load.setPath('../assets/');
     // this.load.multiatlas('creature', '../assets/creature_002.json');
     this.load.multiatlas('creatureLeft', '../assets/creature_left.json')

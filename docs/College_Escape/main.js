@@ -15,7 +15,8 @@ var config = {
     TitleScene,
     GameScene,
     UiScene,
-    GameOverScene
+    GameOverScene,
+    GameWinScene
   ],
   physics: {
     default: 'arcade',

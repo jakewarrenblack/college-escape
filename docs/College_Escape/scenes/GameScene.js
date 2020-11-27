@@ -13,7 +13,7 @@ class GameScene extends Phaser.Scene {
     this.mapWidth = 15360;
     this.rng = 0;
     this.ammo;
-    this.ammoPrint;
+    // this.ammoPrint;
    // this.scale.toggleFullscreen();
     this.scaleW = this.sys.game.config.width;
     this.scaleH = this.sys.game.config.height;
@@ -23,8 +23,7 @@ class GameScene extends Phaser.Scene {
 
   create() { 
     this.activeBullet;
-    this.ammo = 9;
-    this.ammoPrint = 10;
+    this.ammo = 8;
     this.bulletCount = 0;
     this.score = 0;
     this.createAudio();
@@ -49,7 +48,10 @@ class GameScene extends Phaser.Scene {
   }
 
   createEnemies(){
+
+
     this.enemies = [];
+
     
     for(var i=1; i<4; i++){
       this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk')
@@ -359,7 +361,7 @@ hitCountIncrease(){
 }   
 
   createExit(){
-    this.exit = this.physics.add.sprite(14850, this.scaleH/1.89, "exit");
+    this.exit = this.physics.add.sprite(14820, this.scaleH/1.89, "exit");
     this.exit.setPipeline('Light2D')
     this.exit.setScale(0.75)
   }
@@ -398,7 +400,7 @@ hitCountIncrease(){
       setXY: {
         x: this.scaleW/3,
         y: this.scaleH/1.75,
-        stepX: this.scaleW/1.5,
+        stepX: this.scaleW/1.48,
         stepY: 0,
       },
       pipeline: 'Light2D',
@@ -668,10 +670,10 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
 
 
     //If space is pressed and time passed in update > time since last fired
-    else if (this.keySpace.isDown && time > this.lastFired) {
+    else if (this.keySpace.isDown && time > this.lastFired && this.ammo>0) {
       if(this.ammo >= 0){
       this.ammo--;
-      this.ammoPrint--;
+
       }
       console.log('ammo left: ' + this.ammo)
         console.log("fire")
@@ -743,7 +745,7 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
 
 
 for (let i = 0; i < numCigs; i++) {
-
+/*You have a max of 8 bullets. Ammo can't be collected unless you have less than 8. Just refills to max.*/
   if(!this.keySpace.isDown && cigs[i]){
   if (
       Phaser.Geom.Intersects.RectangleToRectangle(
@@ -758,9 +760,9 @@ for (let i = 0; i < numCigs; i++) {
             cigs[i].setVisible(false);
             cigs[i].setActive(false)
             cigs[i].destroy();
-            if(this.ammo<10){
+            if(this.ammo<8){
               this.ammo+=this.bulletCount;
-              this.ammoPrint = this.ammo-1;
+              // this.ammoPrint = this.ammo-1;
               this.bulletCount = 0;
             }
           }
@@ -795,7 +797,7 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
 }
 
 
-  this.infoTxt.setText('Ammo: ' + this.ammoPrint) 
+  this.infoTxt.setText('Ammo: ' + this.ammo) 
 
     
     var numDoors = doors.length;
@@ -823,6 +825,16 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
       }
     }
     
+    if(this.playerAlive && this.player.x > 14800 && this.player.x < this.bg.width && this.cursors.up.isDown || this.deadEnemies.length == 6){
+      this.time.delayedCall(
+        500,
+        function () {
+          this.scene.start("GameWin", { score: this.deadEnemies.length })
+        },
+        [],
+        this
+      );
+    }
 
     //console.log(this.player.score);
     //11: add a score to the game
@@ -905,17 +917,15 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
 
 
   gameOver() {
-    
     this.time.delayedCall(
       500,
       function () {
         this.deathSound.play();
-        this.scene.start("GameOver");
+        this.scene.start("GameOver", { score: this.deadEnemies.length })
       },
       [],
       this
     );
-    
   }
 
   
