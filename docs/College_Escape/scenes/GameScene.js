@@ -25,6 +25,7 @@ class GameScene extends Phaser.Scene {
     this.activeBullet;
     this.ammo = 9;
     this.ammoPrint = 10;
+    this.bulletCount = 0;
     this.score = 0;
     this.createAudio();
     this.createInput();
@@ -391,7 +392,7 @@ hitCountIncrease(){
     //13: add  player sprite to physics engine
     this.doors = this.physics.add.group({
       key: "door",
-      repeat: 15,
+      repeat: 12,
       score: 5,
       scaleXY:5,
       setXY: {
@@ -462,6 +463,7 @@ hitCountIncrease(){
     this.music.play();
     this.music.loop = true;
     this.deathSound = this.sound.add("death");
+    this.roar = this.sound.add("roar")
   }
 
   createInput() {
@@ -647,6 +649,7 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
       // this.player.setVelocityX(0).setBounce(1);
       
       this.player.anims.play("hide", true);
+      this.seesPlayer = false;
 
     }
 
@@ -672,11 +675,15 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
       }
       console.log('ammo left: ' + this.ammo)
         console.log("fire")
+        this.bulletCount+= 1;
+        console.log('bulletcount ' + this.bulletCount)
         this.bullet = this.bullets.get();
         
-        
+
+
         /*If bullet exists*/
-        if (this.bullet)
+
+        this.bullet.update(time,delta,this,this.player)
         {
           console.log('numbullets: ' + this.bullet)
           
@@ -732,35 +739,34 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
     var numCigs = cigs.length;
     // console.log(cigs.length)
     // console.log('numdoors: ' + numDoors)
-  
-    for (let i = 0; i < numCigs; i++) {
 
-      if(!this.keySpace.isDown && cigs[i]){
-      if (
-        Phaser.Geom.Intersects.RectangleToRectangle(
-          this.player.getBounds(),
-          cigs[i].getBounds()
-        )
-      ){
-        if(!this.keySpace.isDown){
-        /*Return ammo when you pick up cigs*/
-        this.bullets.children.each(function(b) {
 
-                if (b.active && b.x > this.player.x + this.scaleW) {
-                        b.setActive(false); 
-                        cigs[i].setActive(false)
-                        cigs[i].setVisible(false);
-                        cigs[i].destroy();
-                        this.ammo = 9;
-                        this.ammoPrint = 10;
-                }
-            }.bind(this));
+
+for (let i = 0; i < numCigs; i++) {
+
+  if(!this.keySpace.isDown && cigs[i]){
+  if (
+      Phaser.Geom.Intersects.RectangleToRectangle(
+        this.player.getBounds(),
+        cigs[i].getBounds()
+      )
+    ){
+    if(!this.keySpace.isDown){
+    /*Return ammo when you pick up cigs*/
+
+          if (this.bulletCount>0) {
+            cigs[i].setVisible(false);
+            cigs[i].setActive(false)
+            cigs[i].destroy();
+            if(this.ammo<10){
+              this.ammo+=this.bulletCount;
+              this.ammoPrint = this.ammo-1;
+              this.bulletCount = 0;
+            }
           }
 
-      
-      }
-
-    
+      } 
+    }  
   }
 }
 
@@ -852,6 +858,32 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
       this.enemy6.followPlayer(this, this.player.x);
     }
    
+
+    if(this.enemy1.seesPlayer){
+      this.roar.play();
+    }
+    if(this.enemy2.seesPlayer){
+      this.roar.play();
+
+    }
+    if(this.enemy3.seesPlayer){
+      this.roar.play();
+
+    }
+    if(this.enemy4.seesPlayer){
+      this.roar.play();
+
+    }
+    if(this.enemy5.seesPlayer){
+      this.roar.play();
+
+    }
+    if(this.enemy6.seesPlayer){
+      this.roar.play();
+
+    }
+
+
   }
 
 

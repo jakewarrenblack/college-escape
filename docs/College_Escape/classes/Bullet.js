@@ -7,6 +7,8 @@ class Bullet extends Phaser.GameObjects.Image {
         this.speed = Phaser.Math.GetSpeed(1500, 1);
         this.setScale(.4);
         this.direction = "r";
+this.counter = 0;
+this.bulletsFired = 0;
     }
     
     fire (x, y)
@@ -25,17 +27,26 @@ class Bullet extends Phaser.GameObjects.Image {
 
     update(time, delta)
     { 
+        this.counter++;
+
+    if(this){
         if (this.direction == "r") {
              this.x += this.speed * delta;
         } else if (this.direction == "l") {
             this.x -= this.speed * delta;   
         }
-
-        if (this.x > this.x + 1920 || this.x < this.x-1920)
+    }
+        /*If modulus returns 0, so the same*/
+        /*Destroying bullets after some time to stop them showing on the screen
+        if they didn't hit an enemy*/
+        if (this.counter >50)
         {
+            console.log('destroying bullet')
             this.setActive(false);
             this.setVisible(false);
+            this.destroy();
+            this.counter = 0;
+      
         }
     }
-
 }
