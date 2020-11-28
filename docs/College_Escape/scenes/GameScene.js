@@ -4,7 +4,7 @@ class GameScene extends Phaser.Scene {
     super("Game");
   }
 
-  init() {
+  init(data) {
     this.playerSpeed = 2.8;
     this.enemyMaxY = 280;
     this.enemyMinY = 80;
@@ -17,6 +17,8 @@ class GameScene extends Phaser.Scene {
    // this.scale.toggleFullscreen();
     this.scaleW = this.sys.game.config.width;
     this.scaleH = this.sys.game.config.height;
+    this.isMuted = data.isMuted;
+    console.log(this.isMuted)
     
 
   }
@@ -43,9 +45,31 @@ class GameScene extends Phaser.Scene {
     this.createBullets();
     this.createEnemies();
     this.collideBulletsPlayer();
-
+this.menuOpen = false;
+this.menuCounter = 0;
     this.physics.add.collider(this.player, this.platforms);
   }
+
+
+  // createPauseMenu(){
+    
+  //   this.pauseMenu = new PauseMenu(this,this.player.x,this.scaleH/2)
+  //   this.pauseMenu.setScrollFactor(0)
+  //   this.player.anims.stop();
+  //   if(this.pauseMenu.closed == true){
+  //     this.pauseMenu.destroy();
+  //     // this.pauseMenu.destroy();
+
+
+  //   }
+  // }
+
+
+   startScene(targetScene) {
+    this.scene.start(targetScene);
+  }
+
+
 
   createEnemies(){
 
@@ -310,7 +334,6 @@ hitCountIncrease(){
     this.enemy6.hitCount++;
     console.log("enemy6 hitCount: " + this.enemy6.hitCount);
   }
-
 
 
 
@@ -619,6 +642,17 @@ hitCountIncrease(){
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     
+    this.keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
+      if(this.keyJ.isDown){
+        console.log('J Pressed')
+        const isNull = this.scene.get('Ui');
+        if (null === isNull) {
+          this.scene.add('Ui', UiScene, true);
+        }
+        
+        this.scene.launch('Ui')
+    }
+
 
 
 

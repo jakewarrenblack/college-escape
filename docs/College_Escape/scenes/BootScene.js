@@ -23,6 +23,7 @@ loadFont(){
 
 
   loadImages() {
+    this.load.image("pauseMenu","../assets/pauseMenu.png")
     this.load.image('myfont', '../assets/hanging_tree_0.png');
     // load images
     this.load.image("bullet", "../assets/smoke.png");
@@ -31,7 +32,7 @@ loadFont(){
     this.load.image("exit", ["../assets/exit.png", "../assets/exit_n.png"]);
     this.load.image("window", ["../assets/window_lit.png", "../assets/window_new_n.png"]);
     //this.load.image("player", "../assets/player.png");
-    this.load.image('mask', '../assets/mask-sprite.png');
+    this.load.image("blue","../assets/blue.png")
     //this.load.image('enemy','../assets/creature.png');
     this.load.image('furniture',["../assets/furniture.png", "../assets/furniture_n.png"]);
     this.load.image('printer',"../assets/printer.png");
@@ -43,6 +44,10 @@ loadFont(){
     this.load.image("floor", "../assets/floor.png");
     this.load.image("deathScreen", "../assets/deathscreen.png")
     this.load.image("winScreen", "../assets/winScreen.png")
+    this.load.image("soundOn","../assets/soundOn.png")
+    this.load.image("close","../assets/close.png")
+    this.load.image("quit-text","../assets/quit-text.png")
+
     //this.load.setPath('../assets/');
     // this.load.multiatlas('creature', '../assets/creature_002.json');
     this.load.multiatlas('creatureLeft', '../assets/creature_left.json')

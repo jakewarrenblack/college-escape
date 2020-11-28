@@ -8,6 +8,7 @@ class UiButton extends Phaser.GameObjects.Container {
     this.hoverKey = hoverKey; // the image that will be displayed when the player hovers over the button
     this.text = text; // the text that will be displayed on the button
     this.targetCallback = targetCallback; // the callback function that will be called when the player clicks the button
+  
 
     // create our Ui Button
     this.createButton();
