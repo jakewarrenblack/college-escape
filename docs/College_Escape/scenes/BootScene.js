@@ -33,6 +33,7 @@ loadFont(){
     this.load.image("window", ["../assets/window_lit.png", "../assets/window_new_n.png"]);
     //this.load.image("player", "../assets/player.png");
     this.load.image("blue","../assets/blue.png")
+    this.load.image("desk","../assets/desk.png")
     //this.load.image('enemy','../assets/creature.png');
     this.load.image('furniture',["../assets/furniture.png", "../assets/furniture_n.png"]);
     this.load.image('printer',"../assets/printer.png");
@@ -97,6 +98,15 @@ loadFont(){
     ]);
     this.load.audio("death", [
       ("../assets/death.ogg")
+    ]);
+    this.load.audio("title-music",[
+      ("../assets/title-music.ogg")
+    ]);
+    this.load.audio("monster-hurt",[
+      ("../assets/monster-hurt.ogg")
+    ]);
+    this.load.audio("oof",[
+      ("../assets/oof4.ogg")
     ]);
   }
 

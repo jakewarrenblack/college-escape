@@ -12,8 +12,7 @@ class OptionScene extends Phaser.Scene {
 
 
   create() {
-    this.music = this.sound.add("bgmusic");
-    this.music.play();
+
     
     this.titleText = this.add.bitmapText(this.scaleW / 2, this.scaleH / 12,'font','OPTIONS',150);
     this.titleText.setOrigin(0.5);

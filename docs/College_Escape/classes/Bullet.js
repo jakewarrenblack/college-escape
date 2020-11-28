@@ -32,6 +32,7 @@ this.bulletsFired = 0;
     if(this){
         if (this.direction == "r") {
              this.x += this.speed * delta;
+             this.scale+=0.02;
         } else if (this.direction == "l") {
             this.x -= this.speed * delta;   
         }

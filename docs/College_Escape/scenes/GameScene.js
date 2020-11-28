@@ -4,6 +4,7 @@ class GameScene extends Phaser.Scene {
     super("Game");
   }
 
+  
   init(data) {
     this.playerSpeed = 2.8;
     this.enemyMaxY = 280;
@@ -41,12 +42,14 @@ class GameScene extends Phaser.Scene {
     this.createAmmo();
     this.createPlayer();
     this.createText();
-    this.createPrinters();
+    
     this.createBullets();
     this.createEnemies();
     this.collideBulletsPlayer();
-this.menuOpen = false;
-this.menuCounter = 0;
+    this.createPrinters();
+    this.createDesks();
+    this.menuOpen = false;
+    this.menuCounter = 0;
     this.physics.add.collider(this.player, this.platforms);
   }
 
@@ -114,10 +117,11 @@ this.menuCounter = 0;
 
               enemy.setActive(false);
               enemy.setVisible(false)
-
+              this.roar.play();
               if(enemy.enemyAlive){
                 this.deadEnemies.push(enemy)
                 enemy.destroy();
+                
                 enemy.enemyAlive = false;
               }
             }
@@ -166,6 +170,7 @@ checkDead(){
 }
 
 changePlayerTint(){
+ 
   if(this.playerHitCount>5){
     this.player.tint = 0xa00900;
   } if(this.playerHitCount >10){
@@ -205,72 +210,86 @@ changePlayerTint(){
 
   collPlayerEnemy1() {
     this.touchingEnemy1 = true;
+  
     // this.player.body.angularVelocity = -40;
     // this.player.setBounce(2,2)
     this.time.delayedCall(500, this.hitCountIncrease, [], this);
     // this.changePlayerTint();
     if(this.playerMelee){
       this.enemy1.hitCount+=0.5;
+      this.monsterHurt.play();
     }
+    
   }
 
   collPlayerEnemy2() {
     this.touchingEnemy2 = true;
+ 
   // this.player.body.angularVelocity = -40;
   this.time.delayedCall(500, this.hitCountIncrease, [], this);
   // this.changePlayerTint();
   // this.player.velocityX*=-1;
   if(this.playerMelee){
     this.enemy2.hitCount+=0.5;
+    this.monsterHurt.play();
   }
 }
 
   collPlayerEnemy3() {
     this.touchingEnemy3 = true;
+  
   // this.player.body.angularVelocity = -40;
     // this.playerHitCount++;
     this.time.delayedCall(500, this.hitCountIncrease, [], this);
     // this.player.velocityX*=-1;
     if(this.playerMelee){
       this.enemy3.hitCount+=0.5;
+      this.monsterHurt.play();
     }
 }
 
 collPlayerEnemy4() {
   this.touchingEnemy4 = true;
+
 // this.player.body.angularVelocity = -40;
 this.time.delayedCall(500, this.hitCountIncrease, [], this);
 // this.changePlayerTint();
 // this.player.velocityX*=-1;
 if(this.playerMelee){
   this.enemy4.hitCount+=0.5;
+  this.monsterHurt.play();
 }
 }
 
 collPlayerEnemy5() {
   this.touchingEnemy5 = true;
+
 // this.player.body.angularVelocity = -40;
 this.time.delayedCall(500, this.hitCountIncrease, [], this);
 // this.changePlayerTint();
 // this.player.velocityX*=-1;
 if(this.playerMelee){
   this.enemy5.hitCount+=0.5;
+  this.monsterHurt.play();
 }
 }
 
 collPlayerEnemy6() {
   this.touchingEnemy6 = true;
+
 // this.player.body.angularVelocity = -40;
 this.time.delayedCall(500, this.hitCountIncrease, [], this);
 // this.changePlayerTint();
 // this.player.velocityX*=-1;
 if(this.playerMelee){
   this.enemy6.hitCount+=0.5;
+  this.monsterHurt.play();
 }
 }
 
 hitCountIncrease(){
   this.playerHitCount++;
+  
   console.log('player hitcount is: '+ this.playerHitCount)
 }
 
@@ -283,6 +302,7 @@ hitCountIncrease(){
     this.bullet.destroy();
     this.enemy1.hitCount++;
     console.log("enemy1 hitCount: " + this.enemy1.hitCount);
+    this.monsterHurt.play();
   }
 
   collBulletEnemy2(bullet, enemy2) {
@@ -293,6 +313,7 @@ hitCountIncrease(){
     this.bullet.destroy();
     this.enemy2.hitCount++;
     console.log("enemy2 hitCount: " + this.enemy2.hitCount);
+    this.monsterHurt.play();
   }
 
   collBulletEnemy3(bullet, enemy3) {
@@ -303,6 +324,7 @@ hitCountIncrease(){
     this.bullet.destroy();
     this.enemy3.hitCount++;
     console.log("enemy3 hitCount: " + this.enemy3.hitCount);
+    this.monsterHurt.play();
   }
 
   collBulletEnemy4(bullet, enemy4) {
@@ -313,6 +335,7 @@ hitCountIncrease(){
     this.bullet.destroy();
     this.enemy4.hitCount++;
     console.log("enemy4 hitCount: " + this.enemy4.hitCount);
+    this.monsterHurt.play();
   }
 
   collBulletEnemy5(bullet, enemy5) {
@@ -323,6 +346,7 @@ hitCountIncrease(){
     this.bullet.destroy();
     this.enemy5.hitCount++;
     console.log("enemy5 hitCount: " + this.enemy5.hitCount);
+    this.monsterHurt.play();
   }
   
   collBulletEnemy6(bullet, enemy6) {
@@ -333,6 +357,7 @@ hitCountIncrease(){
     this.bullet.destroy();
     this.enemy6.hitCount++;
     console.log("enemy6 hitCount: " + this.enemy6.hitCount);
+    this.monsterHurt.play();
   }
 
 
@@ -380,11 +405,11 @@ hitCountIncrease(){
   
   randomPos(){
     /*Randomly position enemies, but not right at the exit or right in front of the player.*/
-    return Phaser.Math.Between(this.scaleW+this.scaleW/8,this.bg.width-200);
+    return Phaser.Math.Between(this.scaleW+this.scaleW/12,this.bg.width-200);
 }   
 
   createExit(){
-    this.exit = this.physics.add.sprite(14820, this.scaleH/1.89, "exit");
+    this.exit = this.physics.add.sprite(14820, this.scaleH-100, "exit");
     this.exit.setPipeline('Light2D')
     this.exit.setScale(0.75)
   }
@@ -470,12 +495,12 @@ hitCountIncrease(){
   createAmmo(){
     this.cigs = this.physics.add.group({
       key: "cig",
-      repeat: 20,
+      repeat: Phaser.Math.Between(2,10),
       score: 5,
       setXY: {
-        x: this.scaleW/2,
+        x: this.randomPos(),
         y: this.scaleH/1.52,
-        stepX: this.scaleW/3,
+        stepX: Phaser.Math.Between(500,2000),
         stepY: 0,
       },
       pipeline: 'Light2D',
@@ -489,6 +514,8 @@ hitCountIncrease(){
     this.music.loop = true;
     this.deathSound = this.sound.add("death");
     this.roar = this.sound.add("roar")
+    this.monsterHurt = this.sound.add("monster-hurt")
+    this.oof = this.sound.add("oof");
   }
 
   createInput() {
@@ -530,12 +557,56 @@ hitCountIncrease(){
 
   createPrinters(){
     
-    this.printer = this.physics.add.sprite(1000,this.scaleH/1.68, "printer").setImmovable();
-    this.printer.setScrollFactor(1,0)
-    this.printer.setScale(3.5)
-     this.printer.enableBody = true;
+    // this.printer = this.physics.add.sprite(1000,this.scaleH/1.68, "printer").setImmovable();
+    
+    
+    this.printers = this.physics.add.group({
+      key: "printer",
+      repeat: 1,
+      score: 8,
+      setXY: {
+        x: this.scaleW/2,
+        y: this.scaleH/1.68,
+        stepX: this.bg.width/5,
+        stepY: 0,
+      },
+      pipeline: 'Light2D',
+    });
+    
+    // this.printers.setScrollFactor(1,0)
+    Phaser.Actions.ScaleXY(this.printers.getChildren(), 3.2,2.1 );
+    // this.printers.setScale(3.5)
+     this.printers.enableBody = true;
 
   }
+
+
+  createDesks(){
+    
+    // this.printer = this.physics.add.sprite(1000,this.scaleH/1.68, "printer").setImmovable();
+    
+    
+    this.desks = this.physics.add.group({
+      key: "desk",
+      repeat: 1,
+      score: 5,
+      setXY: {
+        x: this.scaleW/1.1,
+        y: this.scaleH/1.63,
+        stepX: this.bg.width/4,
+        stepY: 0,
+      },
+      pipeline: 'Light2D',
+    });
+    
+    // this.printers.setScrollFactor(1,0)
+    Phaser.Actions.ScaleXY(this.desks.getChildren(), 1,1 );
+    // this.printers.setScale(3.5)
+     this.desks.enableBody = true;
+
+  }
+
+
 
   createCamera() {
     // Phaser supports multiple cameras, but you can access the default camera like this:
@@ -671,7 +742,8 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
     if (this.cursors.left.isDown) {
       this.bg.tilePositionX = this.myCam.scrollX -=5;
       //this.furniture.tilePositionX = this.myCam.scrollX -=5;
-      this.player.setVelocityX(-700)
+      /*Run away a little bit faster than the enemy can chase you*/
+      this.player.setVelocityX(-550)
       this.player.anims.play("left", true);
     } 
     else if (this.cursors.right.isDown) {
@@ -711,9 +783,11 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
       }
       console.log('ammo left: ' + this.ammo)
         console.log("fire")
+        
         this.bulletCount+= 1;
         console.log('bulletcount ' + this.bulletCount)
         this.bullet = this.bullets.get();
+        // this.cameras.main.flash();
         
 
 
@@ -725,12 +799,12 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
           
           // this.player.setVelocityX(0)
           // this.player.anims.play("attack",true);
-          /*Bullet moving right, seems uneccessary but will add player facing left eventually*/
+          /*Bullet moving right, seems uneccessary but may add player facing left eventually*/
             this.bullet.setDir("r");
             this.bullet.fire(this.player.x, this.player.y);
             this.bullet.body.setSize(this.bullet.width * 1, this.bullet.height * 1);
-            /*Prevent bullet spamming, can only fire once every second*/
-            this.lastFired = time + 1000;
+            /*Prevent bullet spamming, can only fire once every 500ms*/
+            this.lastFired = time + 500;
             this.activeBullet = this.bullet;
 
             if(this.bullet.x > (this.player.x + this.scaleW)){
@@ -863,11 +937,14 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
       this.time.delayedCall(
         500,
         function () {
+          this.music.stop();
+          this.cameras.main.fade(500);
           this.scene.start("GameWin", { score: this.deadEnemies.length })
         },
         [],
         this
       );
+      
     }
 
     //console.log(this.player.score);
@@ -931,14 +1008,6 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
 
 
   }
-
-
-  
-   hitObject () {
-
-    
-
-}
 
 
 

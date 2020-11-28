@@ -43,7 +43,7 @@ this.setScale(5)
     }
 
  
-    followPlayer(scene, x){
+    followPlayer(scene, x,player){
       
       if(x > (this.x - scene.scaleW/2) || x > (this.x + scene.scaleW/2) ){
         // this.music.play("roar")
