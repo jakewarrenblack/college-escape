@@ -48,6 +48,7 @@ loadFont(){
     this.load.image("soundOn","../assets/soundOn.png")
     this.load.image("close","../assets/close.png")
     this.load.image("quit-text","../assets/quit-text.png")
+    this.load.image("controls","../assets/controls.png")
 
     //this.load.setPath('../assets/');
     // this.load.multiatlas('creature', '../assets/creature_002.json');

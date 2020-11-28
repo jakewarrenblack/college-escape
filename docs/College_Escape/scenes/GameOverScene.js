@@ -20,6 +20,7 @@ class GameOverScene extends Phaser.Scene {
     this.titleText.setOrigin(0.5);
     this.scoreTxt = this.add.text(this.scaleW/2,this.scaleW/2, 'YOU KILLED: ' + this.finalScore + ' ENEMIES', 'text', { fontSize: '500px', fill: '#fff' });
     this.scoreTxt.setOrigin(0.5)
+    this.scoreTxt.setScale(5)
         // create the Play game button
     this.startGameButton = new UiButton(this, this.scaleW / 2, this.scaleH /1.6, 'button1', 'button2', 'PLAY AGAIN', this.startScene.bind(this, 'Game'));
   

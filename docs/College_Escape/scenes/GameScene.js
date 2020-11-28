@@ -713,9 +713,9 @@ hitCountIncrease(){
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     
-    this.keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
-      if(this.keyJ.isDown){
-        console.log('J Pressed')
+    this.keyTab = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB);
+      if(this.keyTab.isDown){
+        console.log('Tab Pressed')
         const isNull = this.scene.get('Ui');
         if (null === isNull) {
           this.scene.add('Ui', UiScene, true);
