@@ -18,7 +18,8 @@ var config = {
     GameOverScene,
     GameWinScene,
     OptionScene,
-    ControlScene
+    ControlScene,
+    RecordScene
   ],
   physics: {
     default: 'arcade',

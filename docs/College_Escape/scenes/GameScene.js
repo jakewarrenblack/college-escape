@@ -19,9 +19,6 @@ class GameScene extends Phaser.Scene {
     this.scaleW = this.sys.game.config.width;
     this.scaleH = this.sys.game.config.height;
     this.isMuted = data.isMuted;
-    console.log(this.isMuted)
-    
-
   }
 
   create() { 
@@ -48,11 +45,23 @@ class GameScene extends Phaser.Scene {
     this.collideBulletsPlayer();
     this.createPrinters();
     this.createDesks();
-    this.menuOpen = false;
-    this.menuCounter = 0;
+    // this.menuOpen = false;
+    // this.menuCounter = 0;
+    this.fastestDeath;
+
+
+    // localStorage.setItem('fastestDeath',null)
+
+    if(localStorage.getItem('fastestDeath')===null){
+      this.fastestDeath = 0;
+    }else{
+      this.fastestDeath=localStorage.getItem('fastestDeath');
+    }
+
     this.physics.add.collider(this.player, this.platforms);
   }
 
+  
 
   // createPauseMenu(){
     
@@ -129,46 +138,6 @@ class GameScene extends Phaser.Scene {
       }
 }
 
-
-
-checkDead(){
-  if(this.enemy1.enemyAlive){
-    this.deadEnemies.push(this.enemy1)
-    this.enemy1.destroy();
-    this.enemy1.enemyAlive = false;
-  }
-  else if(this.enemy2.enemyAlive){
-    this.deadEnemies.push(this.enemy2)
-    this.enemy2.destroy();
-    this.enemy2.enemyAlive = false;
-
-  }
-  else if(this.enemy3.enemyAlive){
-    this.deadEnemies.push(this.enemy3)
-    this.enemy3.destroy();
-    this.enemy3.enemyAlive = false;
-
-  }
-  else if(this.enemy4.enemyAlive){
-    this.deadEnemies.push(this.enemy4)
-    this.enemy4.destroy();
-    this.enemy4.enemyAlive = false;
-
-  }
-  else if(this.enemy5.enemyAlive){
-    this.deadEnemies.push(this.enemy5)
-    this.enemy5.destroy();
-    this.enemy5.enemyAlive = false;
-
-  }
-  else if(this.enemy6.enemyAlive){
-    this.deadEnemies.push(this.enemy6)
-    this.enemy6.destroy();
-    this.enemy6.enemyAlive = false;
-
-  }
-}
-
 changePlayerTint(){
  
   if(this.playerHitCount>5){
@@ -210,9 +179,6 @@ changePlayerTint(){
 
   collPlayerEnemy1() {
     this.touchingEnemy1 = true;
-  
-    // this.player.body.angularVelocity = -40;
-    // this.player.setBounce(2,2)
     this.time.delayedCall(500, this.hitCountIncrease, [], this);
     // this.changePlayerTint();
     if(this.playerMelee){
@@ -289,7 +255,6 @@ if(this.playerMelee){
 
 hitCountIncrease(){
   this.playerHitCount++;
-  
   console.log('player hitcount is: '+ this.playerHitCount)
 }
 
@@ -363,20 +328,16 @@ hitCountIncrease(){
 
 
 
-  createBullets() {
-    
-    //16 bullets array is a group inside arcade physics engine
+  createBullets() { 
+    //We create a group of bullets, each an instance of our Bullet class
     this.bullets = this.physics.add.group({
         classType: Bullet,
         maxSize: this.ammo,
         runChildUpdate: true
     });
 
-    this.bullet; //stores the current bullet being shot
+    this.bullet; //This allows us to access each SINGLE bullet
     this.lastFired = 0;
-    
-    // this.enemy.collBulletEnemy(this,this.bullets,this.enemy);
-
   }
 
   collideBulletsPlayer(){
@@ -505,7 +466,6 @@ hitCountIncrease(){
       },
       pipeline: 'Light2D',
     });
-    // this.cigarettes.setScale(5)
   }
 
   createAudio() {
@@ -709,6 +669,20 @@ hitCountIncrease(){
 
 
   update(time, delta) {
+
+   if(this.fastestDeath!=0){
+     if(this.fastestDeath > time){
+      this.fastestDeath = time;
+     }
+   }
+
+ if(this.fastestDeath==0){
+     this.fastestDeath = time;
+   }
+
+   console.log(this.fastestDeath/1000)
+
+
     this.keyCtrl = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
@@ -757,6 +731,7 @@ this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
       // this.player.setVelocityX(0).setBounce(1);
       
       this.player.anims.play("hide", true);
+      this.player.setActive(false)
       this.seesPlayer = false;
 
     }
@@ -1020,6 +995,9 @@ if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
 
 
   gameOver() {
+
+    localStorage.setItem('fastestDeath',this.fastestDeath)
+
     this.time.delayedCall(
       500,
       function () {

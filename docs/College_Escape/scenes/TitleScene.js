@@ -29,6 +29,7 @@ class TitleScene extends Phaser.Scene {
     this.startGameButton = new UiButton(this, this.scaleW / 2, this.scaleH /3, 'button1', 'button2', 'START', this.startScene.bind(this, 'Game'));
     this.optionsButton = new UiButton(this, this.scaleW / 2, this.scaleH /2, 'button1', 'button2', 'OPTIONS', this.startScene.bind(this, 'Options'));
     this.controlsButton = new UiButton(this, this.scaleW / 2, this.scaleH /1.5, 'button1', 'button2', 'CONTROLS', this.startScene.bind(this, 'Controls'));
+    this.recordsButton = new UiButton(this, this.scaleW / 2, this.scaleH-this.scaleH/6, 'button1', 'button2', 'RECORDS', this.startScene.bind(this, 'Records'));
 
   }
 
