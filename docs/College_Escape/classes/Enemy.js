@@ -65,8 +65,27 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     }   
   }
   
-
-
+//Changes the enemy's colour, progressively darker shades of red until the enemy dies.
+checkHealth(scene){
+  if (this.hitCount == 1) {
+    this.tint =  0xa00900;
+  }else if(this.hitCount == 2){
+    this.tint =  0x7f0700;
+  }else if(this.hitCount ==3){
+    this.tint =  0x5c0500;
+  }else if(this.hitCount >3){
+    this.setActive(false);
+    this.setVisible(false)
+    // this.roar.play();
+    if(this.enemyAlive == true){
+      //Counts our dead enemies. This is our running score which is then shown in gameOver if the player dies.
+      scene.deadEnemies.push(this)
+      //Removes from memory.
+      this.destroy();
+      this.enemyAlive = false;
+    }
+  }
+}
 //Removed, couldn't get it working after implementing the Enemy class.
 //Worked nicely before this class was implemented.
 

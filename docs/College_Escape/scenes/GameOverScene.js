@@ -15,7 +15,11 @@ class GameOverScene extends Phaser.Scene {
     this.bg.setOrigin(0, 0);
     this.titleText = this.add.bitmapText(this.scaleW / 2, this.scaleH / 12,'font','YOU DIED',150);
     this.titleText.setOrigin(0.5);
-    this.scoreTxt = this.add.text(this.scaleW/2,this.scaleW/2, 'YOU KILLED: ' + this.finalScore + ' ENEMIES', 'text', { fontSize: '500px', fill: '#fff' });
+    if(this.finalScore == 1){
+      this.scoreTxt = this.add.text(this.scaleW/2,this.scaleW/2, 'YOU KILLED: ' + this.finalScore + ' ENEMY', 'text', { fontSize: '500px', fill: '#fff' });
+    }else{
+      this.scoreTxt = this.add.text(this.scaleW/2,this.scaleW/2, 'YOU KILLED: ' + this.finalScore + ' ENEMIES', 'text', { fontSize: '500px', fill: '#fff' });  
+    }
     this.scoreTxt.setOrigin(0.5)
     this.scoreTxt.setScale(5)
     // Press to return to the title screen.

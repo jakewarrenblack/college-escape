@@ -28,6 +28,7 @@ class GameScene extends Phaser.Scene {
     this.bulletCount = 0;
     this.score = 0;
     this.playerCrouch;
+    this.playerMelee;
     this.createAudio();
     this.createInput();
     this.createBackground();
@@ -82,7 +83,7 @@ class GameScene extends Phaser.Scene {
   // }
 
 
-
+  //Allows our UiScene to be called.
    startScene(targetScene) {
     this.scene.start(targetScene);
   }
@@ -109,36 +110,7 @@ class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.enemiesGroup,this.platform);
   }
 
-
-//Changes the enemy's colour, progressively darker shades of red until the enemy dies.
-  changeTint(){
-    this.enemies = [this.enemy1,this.enemy2,this.enemy3,this.enemy4,this.enemy5,this.enemy5,this.enemy6]
-    for (let i = 1; i < this.enemies.length+1; i++) {
-        this.enemies.forEach((enemy) =>{
-            if (enemy.hitCount == 1) {
-              enemy.tint =  0xa00900;
-            }else if(enemy.hitCount == 2){
-              enemy.tint =  0x7f0700;
-            }else if(enemy.hitCount ==3){
-              enemy.tint =  0x5c0500;
-            }else if(enemy.hitCount >3){
-
-              enemy.setActive(false);
-              enemy.setVisible(false)
-              this.roar.play();
-              if(enemy.enemyAlive){
-                //Counts our dead enemies. This is our running score which is then shown in gameOver if the player dies.
-                this.deadEnemies.push(enemy)
-                //Removes from memory.
-                enemy.destroy();
-                enemy.enemyAlive = false;
-              }
-            }
-        });
-      }
-}
-
-  //This runs in the update, constantly checking the player's hitcount. Kills the player if hitcount is above 20,
+  //Constantly checking the player's hitcount. Kills the player if hitcount is above 20,
   //Otherwise just increases hitcount and turns darker shades of red.
   //I could have restored health with pickups too, but wanted to make the game harder.
   changePlayerTint(){
@@ -178,12 +150,10 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-
   //This is triggered after our 500ms delay in the collPlayerEnemy functions.
   hitCountIncrease(){
     this.playerHitCount++;
   }
-
 
   createBullets() { 
   //We create a group of bullets, each an instance of our Bullet class
@@ -215,40 +185,54 @@ class GameScene extends Phaser.Scene {
     //For...of is new to javascript. This iterates over the values of an 'iterable' object, in our case an array.
     for(const enemy of this.enemiesArray){
       //Use collider rather than overlap as I want them to be separated.
-      
       this.physics.add.collider(this.bullets,enemy,function(){
         //This function will run on collision. This eliminated the need for separate functions to check collisions.
         this.bullet.setActive(false);
         this.bullet.setVisible(false);
         this.bullet.destroy();
         enemy.hitCount++;
+        enemy.checkHealth(this)
         this.monsterHurt.play();
+        //No callback function.
       },function(){
       },this);
 
-
+      //Add collider between the player and the enemy's bullets.
       this.physics.add.collider(this.player,this.enemyBullets,function(){
         //This function will run on collision. This eliminated the need for separate functions to check collisions.
+        //Bullet will always be destroyed when the collider runs.
         this.enemyBullet.setActive(false);
         this.enemyBullet.setVisible(false);
         this.enemyBullet.destroy();
-
+        //If the player isn't crouching, they'll be hurt by the bullet.
         if(this.playerCrouch == false){
           this.oof.play();
           this.time.delayedCall(500, this.hitCountIncrease, [], this);
-        }
+        }else{
         this.pop.play();
+        }
+      //No callback function.
       },function(){
       },this);
 
+      //Add collider between the player and the enemy.
       this.physics.add.collider(this.player,enemy, function(){
+        //TouchingEnemy will always be true.
         this.touchingEnemy = true;
-        this.oof.play();
-        this.time.delayedCall(500, this.hitCountIncrease, [], this);
-        if(this.playerMelee){
-          enemy.hitCount+=0.5;
-        this.monsterHurt.play();
-      }},function(){
+
+        //While player is in the melee animation state, and the playerMelee variable is true.
+        if(this.playerMelee == true){
+            enemy.hitCount+=0.5;
+            enemy.checkHealth(this);
+            this.monsterHurt.play();
+        }else{
+            enemy.hitCount+=0;
+            this.oof.play();
+            this.time.delayedCall(500, this.hitCountIncrease, [], this);
+            this.changePlayerTint();
+            enemy.checkHealth(this);
+          }
+      },function(){
       },this);
     }
   }
@@ -261,7 +245,7 @@ class GameScene extends Phaser.Scene {
 
   //Creates our final exit door. Normal map added to this one for a reflective appearance.
   createExit(){
-    this.exit = this.physics.add.sprite(14820, this.scaleH-100, "exit");
+    this.exit = this.physics.add.sprite(14820, this.scaleH-200, "exit");
     this.exit.setPipeline('Light2D')
     this.exit.setScale(0.75)
   }
@@ -585,8 +569,7 @@ class GameScene extends Phaser.Scene {
     this.scoreTxt.setText('Score: ' + this.deadEnemies.length)
 
     //Running in update to always check player and enemy hitCounts.
-    this.changeTint();
-    this.changePlayerTint();
+
 
     /*Get children of our doors/cigs to access each of them individually.*/
     var doors = this.doors.getChildren();
@@ -613,17 +596,6 @@ class GameScene extends Phaser.Scene {
         //But player alpha is reduced if this happens in front of a door.
         this.player.anims.play("hide", true);
         this.seesPlayer = false;
-      }
-
-      else if(this.keyCtrl.isDown){
-        //Intended for this to be how the player used cover, which hasn't been implemented.
-        this.player.anims.play("crouch",true);
-        this.playerCrouch = true;
-      } 
-      else if(this.keyShift.isDown){
-        //If playerMelee is true, and the player is touching an enemy, deal 0.5 damage to the enemy.
-        this.player.anims.play("melee",true);
-        this.playerMelee = true;
       }
 
       //If we press space and the time passed in the update is greater than lastFired, allow firing.
@@ -671,6 +643,23 @@ class GameScene extends Phaser.Scene {
       //If we're not pressing any keys, just play the 'standing still' animation, which is a single frame.
       else {
         this.player.anims.play("still",true);
+      }
+
+      if(this.keyShift.isDown){
+        //If playerMelee is true, and the player is touching an enemy, deal 0.5 damage to the enemy.
+        this.player.anims.play("melee",true);
+        this.playerMelee = true;
+      }else{
+        this.playerMelee = false;
+      }
+
+      if(this.keyCtrl.isDown){
+        //Intended for this to be how the player used cover, which hasn't been implemented.
+        this.player.anims.play("crouch",true);
+        this.player.setVelocityX(0)
+        this.playerCrouch = true;
+      }else{
+        this.playerCrouch = false;
       }
     }
     else{
@@ -771,14 +760,16 @@ class GameScene extends Phaser.Scene {
         break;
       }
     }
+
     //Win conditions are kill all enemies or reach the exit door and press up.
     //Second win condition is not yet properly implemented. Since hiding doesn't work, you can't actually reach the end without killing them all.   
-    if(this.playerAlive && this.player.x > 14800 && this.player.x < this.bg.width && this.cursors.up.isDown || this.deadEnemies.length == 6){
+    if(this.playerAlive && Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(),this.exit.getBounds()) || this.deadEnemies.length == 6){
+      this.cameras.main.fade(500);
       this.time.delayedCall(500,function () {
         //If we win, stop the music and fade the camera out.Then launch into the GameWin scene and pass the length of the deadEnemies array as 'score'.
         //Passing the length of deadEnemies isn't really necessary. Since it's the win condition, it can be presumed we've killed them all.
         this.music.stop();
-        this.cameras.main.fade(500);
+        
         this.scene.start("GameWin", { score: this.deadEnemies.length })
       },
       [],
@@ -792,6 +783,7 @@ class GameScene extends Phaser.Scene {
     //When the player dies, set the localStorage's 'fastestDeath' variable to our fastestDeath stored within gameScene.
     localStorage.setItem('fastestDeath',this.fastestDeath)
     //Delay by 500ms.
+   
     this.time.delayedCall(500,function () {
       this.deathSound.play();
       //Pass the length of our deadEnemies array into our gameOver scene.
