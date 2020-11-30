@@ -114,13 +114,17 @@ class GameScene extends Phaser.Scene {
   //Otherwise just increases hitcount and turns darker shades of red.
   //I could have restored health with pickups too, but wanted to make the game harder.
   changePlayerTint(){
-    if(this.playerHitCount>5){
+    if(this.playerHitCount===5){
       this.player.tint = 0xa00900;
-    } if(this.playerHitCount >10){
+      this.oof.play();
+    } if(this.playerHitCount===10){
       this.player.tint = 0x7f0700;
-    } if(this.playerHitCount>15){
+      this.oof.play();
+    } if(this.playerHitCount===15){
       this.player.tint = 0x5c0500;
-    } if(this.playerHitCount >20){
+      this.oof.play();
+    } if(this.playerHitCount===20){
+      this.oof.play();
       this.isPlayerAlive = false;
       this.player.setVisible(false);
       this.player.setActive(false);
@@ -205,9 +209,10 @@ class GameScene extends Phaser.Scene {
         this.enemyBullet.setVisible(false);
         this.enemyBullet.destroy();
         //If the player isn't crouching, they'll be hurt by the bullet.
-        if(this.playerCrouch == false){
+        if(this.playerCrouch === false){
           this.oof.play();
           this.time.delayedCall(500, this.hitCountIncrease, [], this);
+          // this.changePlayerTint();
         }else{
         this.pop.play();
         }
@@ -227,7 +232,6 @@ class GameScene extends Phaser.Scene {
             this.monsterHurt.play();
         }else{
             enemy.hitCount+=0;
-            this.oof.play();
             this.time.delayedCall(500, this.hitCountIncrease, [], this);
             this.changePlayerTint();
             enemy.checkHealth(this);
@@ -719,9 +723,9 @@ class GameScene extends Phaser.Scene {
         }
 
         //seesPlayer is set to true within the Enemy's followPlayer function.
-        if(enemy.seesPlayer){
-          this.roar.play();
-        }
+        // if(enemy.seesPlayer){
+        //   this.roar.play();
+        // }
 
         if(enemy.seesPlayer && enemy.x > this.player.x+this.scaleW/3 && enemy.enemyAlive){
           if(time > this.enemyLastFired){

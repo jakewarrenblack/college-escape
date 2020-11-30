@@ -11,16 +11,13 @@ class GameWinScene extends Phaser.Scene {
   }
 
   create() {
-    //Play the title screen music and show the winScreen image.
-    this.music = this.sound.add("title-music");
-    this.music.play();
     this.bg = this.add.sprite(0, 0, "winScreen");
     this.bg.setOrigin(0, 0);
     this.titleText = this.add.bitmapText(this.scaleW / 2.1, this.scaleH / 12,'font','YOU ESCAPED!',150);
     this.titleText.setOrigin(0.5);
     
-    //Press to play again.
-    this.startGameButton = new UiButton(this, this.scaleW / 2.1, this.scaleH /3.4, 'button1', 'button2', 'PLAY AGAIN', this.startScene.bind(this, 'Game'));
+    //Press to return to title screen.
+    this.startGameButton = new UiButton(this, this.scaleW / 2.1, this.scaleH /3.4, 'button1', 'button2', 'TITLE SCREEN', this.startScene.bind(this, 'Title'));
   
   }
   

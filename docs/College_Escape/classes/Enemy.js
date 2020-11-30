@@ -46,7 +46,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   followPlayer(scene, x,player){
     //If enemy x is greater than or less than the player's position +- the width of the scene/2.
     if(x > (this.x - scene.scaleW/2) || x > (this.x + scene.scaleW/2) ){
-      this.roar.play();
+      // this.roar.play();
 
       /*seesPlayer can also be made true by shooting the enemy*/
       this.seesPlayer = true;

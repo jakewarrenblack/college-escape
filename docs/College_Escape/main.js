@@ -25,7 +25,7 @@ var config = {
     //Enabling the 'arcade' physics engine.
     default: 'arcade',
     arcade: {
-      debug: true,
+      debug: false,
       gravity: {
         y: 0,
       },
