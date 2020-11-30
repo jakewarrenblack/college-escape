@@ -1,11 +1,11 @@
-class Bullet extends Phaser.GameObjects.Image {
+class EnemyBullet extends Phaser.GameObjects.Image {
     constructor(scene) {
         super(scene);
         //Retrieve our bullet sprite.
-        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
+        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'enemyBullet');
         //Parameters passed our distance and time. The bullet will move 1500px in 1 second.
-        this.speed = Phaser.Math.GetSpeed(1500, 1);
-        this.setScale(.4);
+        this.speed = Phaser.Math.GetSpeed(1200, 1);
+        this.setScale(.8);
         this.counter = 0;
     }
     
@@ -35,7 +35,6 @@ class Bullet extends Phaser.GameObjects.Image {
                this.x -= this.speed * delta;   
            }
             //Speed is the same as its current speed multiplied by delta (passed from GameScene)
-            this.scale+=0.02;
         }
         /*If modulus returns 0, so the same*/
         /*Destroying bullets after some time to stop them showing on the screen

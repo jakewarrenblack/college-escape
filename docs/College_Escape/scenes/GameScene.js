@@ -27,6 +27,7 @@ class GameScene extends Phaser.Scene {
     //Used by our cigs to find out how many bullets have been fired
     this.bulletCount = 0;
     this.score = 0;
+    this.playerCrouch;
     this.createAudio();
     this.createInput();
     this.createBackground();
@@ -43,6 +44,7 @@ class GameScene extends Phaser.Scene {
     
     //Collisions
     this.createBullets();
+    this.createEnemyBullets();
     this.createEnemies();
     this.collideBulletsPlayer();
 
@@ -88,24 +90,23 @@ class GameScene extends Phaser.Scene {
 
 
   createEnemies(){
-    //Instantiate as an empty array, then push enemies as they're created.
-    this.enemies = [];
-
-    //We'll have six enemies in total.
-    
-    for(var i=1; i<4; i++){
-      this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk')
-      // this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
-      this.physics.add.collider(this['enemy'+i],this.platform);
-      console.log('enemy'+i +' location is ' + this['enemy'+i].x)
-      this.enemies.push(this['enemy'+i]);
+    this.enemiesGroup = this.physics.add.group();
+     //Instantiate as an empty array, then push enemies as they're created.
+    this.enemiesArray = [];
+  
+    for(var i =1; i<4;i++){
+      this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'creature','walk');
+      this.enemiesGroup.add(this['enemy'+i],true);
+      this.enemiesArray.push(this['enemy'+i]);
     }
-    for(var i=4;  i<7; i++){
-      this['enemy'+i] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'newCreature','walking')
-      // this['enemy'+i].createEnemyTween(this,this['enemy'+i].x);
-      this.physics.add.collider(this['enemy'+i],this.platform);
-      this.enemies.push(this['enemy'+i]);
+  
+    for(var j = 4; j<7;j++){
+      this['enemy'+j] = new Enemy(this,this.randomPos(),this.scaleH/1.7,'newCreature','walking');
+      this.enemiesGroup.add(this['enemy'+j],true);
+      this.enemiesArray.push(this['enemy'+j]);
     }
+  
+    this.physics.add.collider(this.enemiesGroup,this.platform);
   }
 
 
@@ -178,118 +179,10 @@ class GameScene extends Phaser.Scene {
   }
 
 
-  collPlayerEnemy1() {
-    //If touching any enemy, shake animations are played and player bouncing is turned on.
-    this.touchingEnemy1 = true;
-    //Player will bounce back and then be damaged, 500ms delay.
-    this.time.delayedCall(500, this.hitCountIncrease, [], this);
-    //If player is touching an enemy and uses their melee attack, deal 0.5 damage.
-    if(this.playerMelee){
-      this.enemy1.hitCount+=0.5;
-      this.monsterHurt.play();
-    }
-  }
-
-  collPlayerEnemy2() {
-    this.touchingEnemy2 = true;
-    this.time.delayedCall(500, this.hitCountIncrease, [], this);
-    if(this.playerMelee){
-      this.enemy2.hitCount+=0.5;
-      this.monsterHurt.play();
-    }
-  }
-
-  collPlayerEnemy3() {
-    this.touchingEnemy3 = true;
-    this.time.delayedCall(500, this.hitCountIncrease, [], this);
-    if(this.playerMelee){
-      this.enemy3.hitCount+=0.5;
-      this.monsterHurt.play();
-    }
-  }
-
-  collPlayerEnemy4() {
-    this.touchingEnemy4 = true;
-    this.time.delayedCall(500, this.hitCountIncrease, [], this);
-    if(this.playerMelee){
-      this.enemy4.hitCount+=0.5;
-      this.monsterHurt.play();
-    }
-  }
-
-  collPlayerEnemy5() {
-    this.touchingEnemy5 = true;
-    this.time.delayedCall(500, this.hitCountIncrease, [], this);
-    if(this.playerMelee){
-      this.enemy5.hitCount+=0.5;
-      this.monsterHurt.play();
-    }
-  }
-
-  collPlayerEnemy6() {
-    this.touchingEnemy6 = true;
-    this.time.delayedCall(500, this.hitCountIncrease, [], this);
-    if(this.playerMelee){
-      this.enemy6.hitCount+=0.5;
-      this.monsterHurt.play();
-    }
-  }
-
   //This is triggered after our 500ms delay in the collPlayerEnemy functions.
   hitCountIncrease(){
     this.playerHitCount++;
   }
-
-  //If bullet collides with enemy, destroy the bullet, increase that enemy's hitCount, and play the monsterHurt sound.
-  collBulletEnemy1() {
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
-    this.bullet.destroy();
-    this.enemy1.hitCount++;
-    this.monsterHurt.play();
-  }
-
-  collBulletEnemy2() {
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
-    this.bullet.destroy();
-    this.enemy2.hitCount++;
-    this.monsterHurt.play();
-  }
-
-  collBulletEnemy3() {
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
-    this.bullet.destroy();
-    this.enemy3.hitCount++;
-    this.monsterHurt.play();
-  }
-
-  collBulletEnemy4() {
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
-    this.bullet.destroy();
-    this.enemy4.hitCount++;
-    this.monsterHurt.play();
-  }
-
-  collBulletEnemy5() {
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
-    this.bullet.destroy();
-    this.enemy5.hitCount++;
-    this.monsterHurt.play();
-  }
-
-  collBulletEnemy6() {
-    this.bullet.setActive(false);
-    this.bullet.setVisible(false);
-    this.bullet.destroy();
-    this.enemy6.hitCount++;
-    this.monsterHurt.play();
-  }
-
-
 
 
   createBullets() { 
@@ -306,29 +199,58 @@ class GameScene extends Phaser.Scene {
   this.lastFired = 0;
   }
 
+  createEnemyBullets(){
+    this.enemyBullets = this.physics.add.group({
+      classType:EnemyBullet,
+      maxSize:20,
+      runChildUpdate:true
+    })
+    this.enemyBullets;
+    this.enemyLastFired = 0;
+  }
 
-  //This adds our collBulletEnemy and collPlayerEnemy colliders to each of our enemies.
+
   //We loop through and add a physics overlap or physics collider in each case.
   collideBulletsPlayer(){
-    for(var i=1; i<this.enemies.length+1; i++){
-    this.physics.add.overlap(
-      this.bullets,
-      this['enemy' + i],
-      this['collBulletEnemy' + i],
-      null,
-      this
-    );
-  }
+    //For...of is new to javascript. This iterates over the values of an 'iterable' object, in our case an array.
+    for(const enemy of this.enemiesArray){
+      //Use collider rather than overlap as I want them to be separated.
+      
+      this.physics.add.collider(this.bullets,enemy,function(){
+        //This function will run on collision. This eliminated the need for separate functions to check collisions.
+        this.bullet.setActive(false);
+        this.bullet.setVisible(false);
+        this.bullet.destroy();
+        enemy.hitCount++;
+        this.monsterHurt.play();
+      },function(){
+      },this);
 
-  for(var i=1; i<this.enemies.length+1; i++){
-    this.physics.add.collider(
-    this.player,
-    this['enemy' + i],
-    this['collPlayerEnemy' + i],
-    null,
-    this
-    );
-  }
+
+      this.physics.add.collider(this.player,this.enemyBullets,function(){
+        //This function will run on collision. This eliminated the need for separate functions to check collisions.
+        this.enemyBullet.setActive(false);
+        this.enemyBullet.setVisible(false);
+        this.enemyBullet.destroy();
+
+        if(this.playerCrouch == false){
+          this.oof.play();
+          this.time.delayedCall(500, this.hitCountIncrease, [], this);
+        }
+        this.pop.play();
+      },function(){
+      },this);
+
+      this.physics.add.collider(this.player,enemy, function(){
+        this.touchingEnemy = true;
+        this.oof.play();
+        this.time.delayedCall(500, this.hitCountIncrease, [], this);
+        if(this.playerMelee){
+          enemy.hitCount+=0.5;
+        this.monsterHurt.play();
+      }},function(){
+      },this);
+    }
   }
 
 
@@ -367,8 +289,6 @@ class GameScene extends Phaser.Scene {
     Phaser.Actions.ScaleXY(this.windows.getChildren(), 1.5,1.5 );
   }
 
-
-
   createDoor() {
     this.doors = this.physics.add.group({
       key: "door",
@@ -404,7 +324,6 @@ class GameScene extends Phaser.Scene {
   }
 
   createText() {
-
     //Ammo
     this.infoTxt = this.add.text(50,50, 16, 'text', { fontSize: '50px', fill: '#fff' });
     //0 scrollfactor allows us to fix the text to the centre, rather than allowing the camera to scroll past it.
@@ -449,6 +368,7 @@ class GameScene extends Phaser.Scene {
     this.roar = this.sound.add("roar")
     this.monsterHurt = this.sound.add("monster-hurt")
     this.oof = this.sound.add("oof");
+    this.pop = this.sound.add("pop");
   }
 
   //Allow input from cursor keys (arrows).
@@ -673,7 +593,7 @@ class GameScene extends Phaser.Scene {
     var cigs = this.cigs.getChildren();
 
     /*Wrapping all of our movement/action controls in this if statement. If not touching any enemy, move normally.*/
-    if(!this.touchingEnemy1 && !this.touchingEnemy2 && !this.touchingEnemy3 && !this.touchingEnemy4 && !this.touchingEnemy5 && !this.touchingEnemy6){
+    if(!this.touchingEnemy){
       if (this.cursors.left.isDown) {
         /*Scroll the background left.*/
         this.bg.tilePositionX = this.myCam.scrollX -=5;
@@ -698,6 +618,7 @@ class GameScene extends Phaser.Scene {
       else if(this.keyCtrl.isDown){
         //Intended for this to be how the player used cover, which hasn't been implemented.
         this.player.anims.play("crouch",true);
+        this.playerCrouch = true;
       } 
       else if(this.keyShift.isDown){
         //If playerMelee is true, and the player is touching an enemy, deal 0.5 damage to the enemy.
@@ -723,6 +644,8 @@ class GameScene extends Phaser.Scene {
         //The Bullet's update can now access what we've passed into it.
         this.bullet.update(time,delta,this,this.player)
         {
+
+        this.bullet.setDir("r");
 
         //Bullet's initial position is set to the player's x and y position.
         this.bullet.fire(this.player.x, this.player.y);
@@ -753,7 +676,7 @@ class GameScene extends Phaser.Scene {
     else{
       //If we are touching an enemy, we turn on bouncing so the player bounces away from the enemy (once they're not running towards them).
       //The camera will also shake and the player's 'crouch' animation will play.
-      if(this.touchingEnemy1 || this.touchingEnemy2 || this.touchingEnemy3 || this.touchingEnemy4 || this.touchingEnemy5 || this.touchingEnemy6){
+      if(this.touchingEnemy){
       this.player.anims.play("crouch",true);
       this.player.body.setBounce(2,2);
       this.cameras.main.shake(500);
@@ -794,28 +717,38 @@ class GameScene extends Phaser.Scene {
     }
 
 
-    //If we're to the right or left of any enemy, we aren't touching them.
-    if(this.player.x > this.enemy1.x || this.player.x < this.enemy1.x ){
-      this.touchingEnemy1 = false;
-    }
+    for(const enemy of this.enemiesArray){
+      //If we're to the right or left of any enemy, we aren't touching them.
+      if(this.player.x > enemy.x || this.player.x < enemy.x ){
+        this.touchingEnemy = false;
+      }
 
-    if(this.player.x > this.enemy2.x || this.player.x < this.enemy2.x){
-      this.touchingEnemy2 = false;
-    }
+        //Follow player is a method in the Enemy class.
+        if(enemy.enemyAlive){
+        //If the enemy comes within a certain distance of the player, seesPlayer is set to true.
+          enemy.followPlayer(this, this.player.x);
+        }
 
-    if(this.player.x > this.enemy3.x || this.player.x < this.enemy3.x){
-      this.touchingEnemy3 = false;
-    }
-    if(this.player.x > this.enemy4.x || this.player.x < this.enemy4.x){
-      this.touchingEnemy4 = false;
-    }
+        //seesPlayer is set to true within the Enemy's followPlayer function.
+        if(enemy.seesPlayer){
+          this.roar.play();
+        }
 
-    if(this.player.x > this.enemy5.x || this.player.x < this.enemy5.x){
-      this.touchingEnemy5 = false;
-    }
+        if(enemy.seesPlayer && enemy.x > this.player.x+this.scaleW/3 && enemy.enemyAlive){
+          if(time > this.enemyLastFired){
+            this.enemyBullet = this.enemyBullets.get();
+            this.enemyBullet.update(time,delta)
+            {
+              this.enemyBullet.setDir("l");
+              this.enemyBullet.fire(enemy.x, enemy.y);
+              this.enemyLastFired = time + 2000;
+              if(this.enemyBullet.x < (this.player.x - this.scaleW)){
+                this.enemyBullet.setActive(false);
+              }
+            }
+          }
 
-    if(this.player.x > this.enemy6.x || this.player.x < this.enemy6.x){
-      this.touchingEnemy6 = false;
+        }
     }
 
     //Ammo is initialised as blank, set it to equal our ammo count.
@@ -853,52 +786,6 @@ class GameScene extends Phaser.Scene {
       );
     }
 
-    //Follow player is a method in the Enemy class.
-    if(this.enemy1.enemyAlive){
-      this.enemy1.followPlayer(this, this.player.x);
-    }
-    if(this.enemy2.enemyAlive){
-      this.enemy2.followPlayer(this, this.player.x);
-    }
-    if(this.enemy3.enemyAlive){
-      this.enemy3.followPlayer(this, this.player.x);
-    }
-    if(this.enemy4.enemyAlive){
-      this.enemy4.followPlayer(this, this.player.x);
-    }
-    if(this.enemy5.enemyAlive){
-      this.enemy5.followPlayer(this, this.player.x);
-    }
-    if(this.enemy6.enemyAlive){
-      this.enemy6.followPlayer(this, this.player.x);
-    }
-
-    //seesPlayer is set to true within the Enemy's followPlayer function.
-    //This function runs above while each enemy is alive.
-    //If the enemy comes within a certain distance of the player, seesPlayer is set to true.
-    if(this.enemy1.seesPlayer){
-      this.roar.play();
-    }
-    if(this.enemy2.seesPlayer){
-      this.roar.play();
-
-    }
-    if(this.enemy3.seesPlayer){
-      this.roar.play();
-
-    }
-    if(this.enemy4.seesPlayer){
-      this.roar.play();
-
-    }
-    if(this.enemy5.seesPlayer){
-      this.roar.play();
-
-    }
-    if(this.enemy6.seesPlayer){
-      this.roar.play();
-
-    }
   }
 
   gameOver() {

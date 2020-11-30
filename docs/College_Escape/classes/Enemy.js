@@ -40,6 +40,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.setScale(5)
     this.anims.play(animKey,true)
   }
+  
 
  
   followPlayer(scene, x,player){
@@ -63,6 +64,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.flipX = false;
     }   
   }
+  
+
 
 //Removed, couldn't get it working after implementing the Enemy class.
 //Worked nicely before this class was implemented.
@@ -70,23 +73,14 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 // createEnemyTween(scene,x){
 //   this.tween = scene.tweens.add({
 //     targets: this,
-//     x: { from: x, to: x+300 },
+//     x: { from: x, to: x+600 },
 //     ease: 'Linear', 
 //     duration: 2000,
 //     repeat: -1,  
 //     yoyo: true,
-//     flipX:true,
-//     paused:false
+//     flipX:false,
+//     paused:this.seesPlayer
 //   });
-//   if (this.tween.isPlaying() && this.seesPlayer)
-//   {
-//     this.tween.pause();
-//       console.log('tween paused')
-//     }
-//   else
-//   {
-//     this.tween.resume();
-//       console.log('tween resumed')
-//   }
+// }
 // }
 }

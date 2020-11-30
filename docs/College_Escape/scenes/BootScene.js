@@ -24,6 +24,7 @@ loadImages() {
   this.load.image('myfont', '../assets/hanging_tree_0.png');
 
   this.load.image("bullet", "../assets/smoke.png");
+  this.load.image("enemyBullet", "../assets/enemyBullet.png");
   this.load.image('title-door', '../assets/title_door.png');
   //Loads the background as well as a normal map for the background.
   this.load.image("background", ["../assets/background_ext_lit.png", "../assets/background_ext_n.png"]);
@@ -100,6 +101,9 @@ loadAudio() {
   ]);
   this.load.audio("oof",[
     ("../assets/oof4.ogg")
+  ]);
+  this.load.audio("pop",[
+    ("../assets/pop.ogg")
   ]);
 }
 
