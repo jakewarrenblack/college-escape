@@ -1,6 +1,6 @@
 var config = {
+  //WEBGL is necessary for my lighting effects.
   type: Phaser.WEBGL,
-  //pixelArt: true,
   scale: {
     mode: Phaser.Scale.FIT,
     parent:'phaser-game',
@@ -9,7 +9,7 @@ var config = {
     height:1140
   },
   
-
+  //Our game is instantiated with all its scenes as part of the config.
   scene: [
     BootScene,
     TitleScene,
@@ -22,6 +22,7 @@ var config = {
     RecordScene
   ],
   physics: {
+    //Enabling the 'arcade' physics engine.
     default: 'arcade',
     arcade: {
       debug: true,
@@ -31,7 +32,5 @@ var config = {
     },
   },
 };
-
-
 
 var game = new Phaser.Game(config);

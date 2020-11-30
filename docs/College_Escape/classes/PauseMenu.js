@@ -1,6 +1,5 @@
 
-//THI IS NOT USED//
-
+//THIS IS NOT USED//
 
 console.log("PauseMenu class");
 
@@ -16,9 +15,6 @@ class PauseMenu extends Phaser.Physics.Arcade.Sprite {
         this.closeBtn = scene.add.sprite(x,y+scene.scaleH/4,'close').setInteractive({useHandCursor:true});
         this.closeBtn.setScale(0.05)
         // Phaser.GameObjects.Image.call(this,scene,x,y+20,'close').setScale(0.1)
-
-
-
 
         this.closeBtn.on('pointerdown',(pointer)=>{
           console.log('close button pressed')
