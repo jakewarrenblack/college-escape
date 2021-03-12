@@ -4,4 +4,4 @@
 
 
 # College Escape
-* Clunky sidescrolling 'survival horror' game made in Phaser.js *
+* Clunky sidescrolling 'survival horror' game made in Phaser.js
